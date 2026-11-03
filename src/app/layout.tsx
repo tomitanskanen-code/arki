@@ -22,6 +22,10 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
   },
   formatDetection: { telephone: false },
+  // Next.js tuottaa vain etuliitteettömän "mobile-web-app-capable"-merkinnän;
+  // iOS tarvitsee lisäksi Applen oman, jotta kotinäytön sovellus avautuu
+  // ilman Safarin osoiteriviä.
+  other: { "apple-mobile-web-app-capable": "yes" },
   robots: { index: false, follow: false },
 }
 
