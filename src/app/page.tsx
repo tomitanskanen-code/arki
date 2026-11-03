@@ -6,6 +6,7 @@ import {
   calendarRepository,
   familyRepository,
   getSignedInEmail,
+  schoolMenuLink,
   schoolMenuProvider,
   weatherProvider,
 } from "@/data/server"
@@ -62,6 +63,7 @@ async function TodayContent() {
       events={events}
       weather={weather}
       menu={menu}
+      menuLink={schoolMenuLink}
     />
   )
 }

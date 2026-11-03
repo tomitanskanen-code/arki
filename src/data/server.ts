@@ -49,6 +49,15 @@ export const weatherProvider: WeatherProvider = openMeteoWeatherProvider
 export const schoolMenuProvider: SchoolMenuProvider | null =
   isSupabaseConfigured ? null : mockSchoolMenuProvider
 
+/**
+ * Linkki koulun omaan ruokalistasivuun, kun koneluettavaa syötettä ei ole.
+ * Porvoo (Aromi): RSS-syöte on olemassa mutta tyhjä, ja sivuston oma
+ * JSON-rajapinta on dokumentoimaton – siksi vain linkki (ks. CLAUDE.md).
+ */
+export const schoolMenuLink: string | null = isSupabaseConfigured
+  ? "https://aromimenu.cgisaas.fi/PorvooAromieMenus/FI/Default/Uusi/Koulut/Page/Restaurant"
+  : null
+
 export const authEnabled = isSupabaseConfigured
 
 /** Kirjautuneen käyttäjän sähköposti, tai null esittelytilassa. */

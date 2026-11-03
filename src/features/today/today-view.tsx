@@ -1,3 +1,5 @@
+import { ArrowUpRight } from "lucide-react"
+
 import { Section } from "@/components/layout/page"
 import { buildDayAgenda } from "@/domain/calendar"
 import type {
@@ -29,6 +31,8 @@ export interface TodayData {
   weather: WeatherSnapshot | null
   /** undefined = ruokalistalähdettä ei ole, osio piilotetaan */
   menu: SchoolMenuDay | null | undefined
+  /** Linkki koulun ruokalistasivulle, jos syötettä ei ole */
+  menuLink?: string | null
 }
 
 /** Koskeeko tapahtuma vain lapsia (koulu tai lasten harrastus)? */
@@ -46,6 +50,7 @@ export function TodayView({
   events,
   weather,
   menu,
+  menuLink,
 }: TodayData) {
   const children = members.filter((m) => m.role === "child")
   const childIds = new Set(children.map((c) => c.id))
@@ -155,6 +160,20 @@ export function TodayView({
               ) : (
                 <p className="text-muted-foreground">Ei kouluruokaa tänään.</p>
               )}
+            </Section>
+          )}
+          {menu === undefined && menuLink && (
+            <Section title="Ruokalista">
+              <a
+                href={menuLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center gap-1.5 text-[15px] font-medium text-foreground/80 hover:text-foreground"
+              >
+                Kouluruokalista
+                <ArrowUpRight aria-hidden className="size-4" />
+                <span className="sr-only">(avautuu uuteen ikkunaan)</span>
+              </a>
             </Section>
           )}
 
