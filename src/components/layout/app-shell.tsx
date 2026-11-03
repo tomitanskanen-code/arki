@@ -1,4 +1,5 @@
 import { BottomNav, SideNav } from "./app-nav"
+import { RefreshOnReturn } from "./refresh-on-return"
 
 /**
  * Sovelluksen runko: mobiilissa alanavigaatio, iPadilla ja tietokoneella
@@ -12,6 +13,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <BottomNav />
+      <RefreshOnReturn />
     </div>
   )
 }
