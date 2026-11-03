@@ -4,11 +4,12 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
-import { isActive, NAV_ITEMS } from "./nav-items"
+import { hidesNav, isActive, NAV_ITEMS } from "./nav-items"
 
 /** Mobiilin alanavigaatio. Huomioi iPhonen kotipalkin (safe area). */
 export function BottomNav() {
   const pathname = usePathname()
+  if (hidesNav(pathname)) return null
 
   return (
     <nav
@@ -46,6 +47,7 @@ export function BottomNav() {
 /** iPadin ja tietokoneen sivupalkki. */
 export function SideNav() {
   const pathname = usePathname()
+  if (hidesNav(pathname)) return null
 
   return (
     <nav

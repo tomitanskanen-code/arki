@@ -19,7 +19,8 @@ import type { InstantRange, LocalDate } from "@/lib/dates"
  */
 
 export interface FamilyRepository {
-  getFamily(): Promise<Family>
+  /** null, jos kirjautunutta käyttäjää ei ole vielä liitetty perheeseen. */
+  getFamily(): Promise<Family | null>
   getMembers(): Promise<FamilyMember[]>
   updateHomeLocation(location: HomeLocation): Promise<void>
 }

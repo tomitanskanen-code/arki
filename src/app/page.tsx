@@ -5,9 +5,11 @@ import { PageContainer } from "@/components/layout/page"
 import {
   calendarRepository,
   familyRepository,
+  getSignedInEmail,
   schoolMenuProvider,
   weatherProvider,
 } from "@/data/server"
+import { NoFamilyNotice } from "@/features/family/no-family-notice"
 import { TodaySkeleton, TodayView } from "@/features/today/today-view"
 import { localDayRange, todayLocal } from "@/lib/dates"
 
@@ -44,6 +46,7 @@ async function TodayContent() {
     calendarRepository.getEvents(localDayRange(today)),
     optional(schoolMenuProvider.getMenu(today), "Ruokalistan haku"),
   ])
+  if (!family) return <NoFamilyNotice email={await getSignedInEmail()} />
   const weather = await optional(
     weatherProvider.getToday(family.home),
     "Säähaku",

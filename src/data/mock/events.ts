@@ -287,7 +287,7 @@ function eventsForDate(date: LocalDate): CalendarEvent[] {
       timed(date, {
         sourceId: family,
         slug: "hammaslaakari",
-        title: "Eetun hammastarkastus",
+        title: "Hammastarkastus",
         start: "15:30",
         end: "16:00",
         memberIds: [MEMBER.eetu, MEMBER.laura],

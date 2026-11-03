@@ -3,6 +3,8 @@ import { cookies } from "next/headers"
 import type { CalendarRepository, FamilyRepository } from "@/data/repositories"
 import { findPreset } from "@/domain/places"
 
+import "server-only"
+
 import { generateMockEvents } from "./events"
 import { MOCK_FAMILY, MOCK_MEMBERS, MOCK_SOURCES } from "./fixtures"
 

@@ -19,6 +19,11 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/asetukset", label: "Asetukset", icon: Settings2 },
 ]
 
+/** Sivut, joilla navigaatiota ei näytetä. */
+export function hidesNav(pathname: string) {
+  return pathname === "/kirjaudu"
+}
+
 export function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname.startsWith(href)
 }

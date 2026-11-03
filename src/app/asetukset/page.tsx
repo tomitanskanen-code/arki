@@ -3,10 +3,17 @@ import type { Metadata } from "next"
 import { Suspense } from "react"
 
 import { PageContainer, PageHeader, Section } from "@/components/layout/page"
-import { calendarRepository, familyRepository } from "@/data/server"
+import {
+  authEnabled,
+  calendarRepository,
+  familyRepository,
+  getSignedInEmail,
+} from "@/data/server"
 import { SOURCE_KIND_LABELS } from "@/domain/calendar"
 import type { SyncStatus } from "@/domain/types"
+import { signOutAction } from "@/features/auth/actions"
 import { MemberDot } from "@/features/family/member-dot"
+import { NoFamilyNotice } from "@/features/family/no-family-notice"
 import { HomeLocationForm } from "@/features/settings/home-location-form"
 import { cn } from "@/lib/utils"
 
@@ -31,11 +38,13 @@ export default function SettingsPage() {
 }
 
 async function SettingsContent() {
-  const [family, members, sources] = await Promise.all([
+  const [family, members, sources, email] = await Promise.all([
     familyRepository.getFamily(),
     familyRepository.getMembers(),
     calendarRepository.getSources(),
+    getSignedInEmail(),
   ])
+  if (!family) return <NoFamilyNotice email={email} />
   const memberName = new Map(members.map((m) => [m.id, m.displayName]))
 
   return (
@@ -87,6 +96,9 @@ async function SettingsContent() {
             </li>
           ))}
         </ul>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Esimerkkikalenterit. Oikeat syötteet otetaan käyttöön vaiheessa 3.
+        </p>
         <button
           type="button"
           disabled
@@ -100,11 +112,29 @@ async function SettingsContent() {
         </button>
       </Section>
 
+      {authEnabled && (
+        <Section title="Tili">
+          <div className="flex items-center justify-between gap-4">
+            <p className="min-w-0 truncate text-[15px]">{email}</p>
+            <form action={signOutAction}>
+              <button
+                type="submit"
+                className="h-11 shrink-0 rounded-xl border border-input px-4 text-sm font-medium"
+              >
+                Kirjaudu ulos
+              </button>
+            </form>
+          </div>
+        </Section>
+      )}
+
       <Section title="Tietoa">
         <p className="text-sm leading-relaxed text-muted-foreground">
-          Arki · versio 0.1 · esimerkkidata käytössä. Kirjautuminen, yhteinen
-          tietokanta ja oikeat kalenterit otetaan käyttöön seuraavissa
-          vaiheissa.
+          Arki · versio 0.2 ·{" "}
+          {authEnabled
+            ? "perhe ja kauppalista tietokannassa, sää Open-Meteosta."
+            : "esittelytila: esimerkkidata, ei kirjautumista."}{" "}
+          Kalenterit ja ruokalista ovat vielä esimerkkidataa.
         </p>
       </Section>
     </>
