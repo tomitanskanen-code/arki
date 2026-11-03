@@ -50,6 +50,20 @@ export interface CalendarSource {
   syncStatus: SyncStatus
   lastSyncedAt: string | null
   lastError: string | null
+  /** Syötteen palvelin näytettäväksi (esim. porvoo.inschool.fi). */
+  urlHost?: string | null
+}
+
+/** Käsin syötetty viikkorytmi, esim. esikoulu. */
+export interface ManualScheduleEntry {
+  id: string
+  memberId: string
+  title: string
+  /** ISO-viikonpäivä: 1 = maanantai … 7 = sunnuntai */
+  weekday: number
+  /** "HH:mm" Helsingin aikaa */
+  startTime: string
+  endTime: string
 }
 
 export type EventCategory = "school" | "hobby" | "work" | "family" | "other"
@@ -65,6 +79,8 @@ interface BaseEvent {
   /** Ketä tapahtuma koskee; tyhjä = koko perhe. */
   memberIds: string[]
   category: EventCategory
+  /** Muut lähteet, joista sama tapahtuma löytyi (duplikaatit yhdistetty). */
+  alsoInSourceIds?: string[]
 }
 
 export interface TimedEvent extends BaseEvent {
