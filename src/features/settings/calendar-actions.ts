@@ -19,11 +19,26 @@ export interface FormState {
 const KINDS: NewCalendarSource["kind"][] = ["wilma", "myclub", "google", "ics"]
 const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/
 
-/** Varmistaa, että jäsen kuuluu omaan perheeseen. */
+/** Lomakkeen "koko perhe" -valinnan arvo. */
+const WHOLE_FAMILY = "family"
+
+/**
+ * Varmistaa, että jäsen kuuluu omaan perheeseen.
+ * Palauttaa null = koko perhe, undefined = puuttuva tai virheellinen valinta.
+ */
 async function validMemberId(value: FormDataEntryValue | null) {
-  if (typeof value !== "string" || value === "") return null
+  if (value === WHOLE_FAMILY) return null
+  if (typeof value !== "string" || value === "") return undefined
   const members = await familyRepository.getMembers()
   return members.some((m) => m.id === value) ? value : undefined
+}
+
+export async function updateSourceMemberAction(formData: FormData) {
+  const id = formData.get("id")
+  const memberId = await validMemberId(formData.get("memberId"))
+  if (typeof id !== "string" || memberId === undefined) return
+  await calendarAdmin.updateSourceMember(id, memberId)
+  refresh()
 }
 
 export async function addSourceAction(
@@ -45,7 +60,10 @@ export async function addSourceAction(
     }
   }
   if (memberId === undefined) {
-    return { status: "error", message: "Valitse perheenjäsen listalta." }
+    return {
+      status: "error",
+      message: "Valitse, kenelle kalenteri kuuluu.",
+    }
   }
   if (!url) return { status: "error", message: "Liitä kalenterin osoite." }
   const checked = validateFeedUrl(url)

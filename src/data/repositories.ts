@@ -52,6 +52,8 @@ export interface CalendarAdminRepository {
   /** Lisää lähteen ja hakee sen heti. Palauttaa virheen tekstinä. */
   addSource(input: NewCalendarSource): Promise<{ error: string | null }>
   removeSource(id: string): Promise<void>
+  /** Vaihtaa, kenelle kalenteri kuuluu (null = koko perhe). */
+  updateSourceMember(id: string, memberId: string | null): Promise<void>
   refreshSource(id: string): Promise<void>
   getManualSchedules(): Promise<ManualScheduleEntry[]>
   /** Korvaa jäsenen koko viikkorytmin. Tyhjä days poistaa rytmin. */

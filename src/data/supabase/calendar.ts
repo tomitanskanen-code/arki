@@ -291,6 +291,15 @@ export const supabaseCalendarAdmin: CalendarAdminRepository = {
     if (error) throw error
   },
 
+  async updateSourceMember(id, memberId) {
+    const supabase = await createSupabaseServerClient()
+    const { error } = await supabase
+      .from("calendar_sources")
+      .update({ member_id: memberId })
+      .eq("id", id)
+    if (error) throw error
+  },
+
   async refreshSource(id) {
     const supabase = await createSupabaseServerClient()
     await supabase

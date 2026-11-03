@@ -21,6 +21,7 @@ import { AddSourceForm } from "@/features/settings/add-source-form"
 import { HomeLocationForm } from "@/features/settings/home-location-form"
 import { ManualScheduleForm } from "@/features/settings/manual-schedule-form"
 import { SourceActions } from "@/features/settings/source-actions"
+import { SourceMemberSelect } from "@/features/settings/source-member-select"
 import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = { title: "Asetukset" }
@@ -109,10 +110,22 @@ async function SettingsContent() {
                 <p className="text-[15px]">{s.name}</p>
                 <p className="text-sm text-muted-foreground">
                   {SOURCE_KIND_LABELS[s.kind]}
-                  {s.memberId
-                    ? ` · ${memberName.get(s.memberId)}`
-                    : " · Koko perhe"}
                   {s.urlHost && ` · ${s.urlHost}`}
+                </p>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  Kenelle:{" "}
+                  {authEnabled ? (
+                    <SourceMemberSelect
+                      sourceId={s.id}
+                      sourceName={s.name}
+                      memberId={s.memberId}
+                      members={members}
+                    />
+                  ) : s.memberId ? (
+                    memberName.get(s.memberId)
+                  ) : (
+                    "Koko perhe"
+                  )}
                 </p>
                 <p
                   className={cn(

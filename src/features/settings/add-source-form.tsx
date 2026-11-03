@@ -61,14 +61,16 @@ export function AddSourceForm({ members }: { members: FamilyMember[] }) {
             />
           </Field>
           <Field label="Kenelle" htmlFor="memberId">
-            <Select id="memberId" name="memberId" defaultValue="">
-              <option value="">Koko perhe</option>
-              {members.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.displayName}
-                </option>
-              ))}
-            </Select>
+            <MemberSelect
+              id="memberId"
+              members={members}
+              defaultValue=""
+              required
+            />
+            <span className="mt-1.5 block text-xs leading-relaxed text-muted-foreground">
+              Lukujärjestys ja harrastukset lapselle, yhteinen kalenteri koko
+              perheelle.
+            </span>
           </Field>
           <Field label="Kalenterin osoite" htmlFor="url">
             <input
@@ -129,6 +131,26 @@ export function Field({
       </label>
       {children}
     </div>
+  )
+}
+
+/** Perheenjäsenen valinta; arvo "family" = koko perhe. */
+export function MemberSelect({
+  members,
+  ...props
+}: { members: FamilyMember[] } & React.ComponentProps<"select">) {
+  return (
+    <Select name="memberId" {...props}>
+      <option value="" disabled>
+        Valitse…
+      </option>
+      <option value="family">Koko perhe</option>
+      {members.map((m) => (
+        <option key={m.id} value={m.id}>
+          {m.displayName}
+        </option>
+      ))}
+    </Select>
   )
 }
 

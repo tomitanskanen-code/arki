@@ -10,6 +10,7 @@ export const mockCalendarAdmin: CalendarAdminRepository = {
     error: "Kalenterien lisääminen vaatii Supabase-yhteyden.",
   }),
   removeSource: async () => notAvailable(),
+  updateSourceMember: async () => notAvailable(),
   refreshSource: async () => notAvailable(),
   getManualSchedules: async () => [],
   setManualSchedule: async () => notAvailable(),
