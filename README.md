@@ -78,7 +78,7 @@ Siirto toiselle koneelle: [docs/SIIRTO.md](docs/SIIRTO.md).
    Open-Meteo-sää, Vercel-julkaisu** – valmis, käytössä molemmilla
    vanhemmilla ja iPhonen kotinäytöltä
 3. **Kalenteri-integraatiot: Wilma, myClub ja Google (iCal), viikkorytmi** –
-   koodi valmis, käyttöönotto kesken
+   valmis, käytössä
 4. Kouluruokalistan integraatio, viimeistely, testaus iOS-laitteilla
 
 ## Ympäristömuuttujat
