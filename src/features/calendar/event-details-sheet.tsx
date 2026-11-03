@@ -65,6 +65,12 @@ function Details({
     : "Koko päivä"
   const location = item.type === "event" ? item.event.location : null
   const description = item.type === "event" ? item.event.description : null
+  const alsoIn =
+    item.type === "event"
+      ? (item.event.alsoInSourceIds ?? [])
+          .map((id) => lookup.sources.get(id)?.name)
+          .filter((name): name is string => Boolean(name))
+      : []
 
   return (
     <>
@@ -104,6 +110,11 @@ function Details({
               {" "}
               · {SOURCE_KIND_LABELS[view.source.kind]}
             </span>
+            {alsoIn.length > 0 && (
+              <span className="block text-sm text-muted-foreground">
+                Myös: {alsoIn.join(", ")}
+              </span>
+            )}
           </Row>
         )}
       </dl>

@@ -65,6 +65,7 @@ export function CalendarView({
 
   const visible = filterByMembers(events, selected)
   const days = localWeekDays(date)
+  const failing = sources.filter((s) => s.syncStatus === "error")
 
   function toggleMember(id: string) {
     setSelected((current) => {
@@ -108,6 +109,12 @@ export function CalendarView({
             ? capitalize(formatWeekday(date))
             : `Viikko ${isoWeekNumber(date)}`}
         </h1>
+        {failing.length > 0 && (
+          <p role="status" className="mt-2 text-sm text-destructive">
+            Päivitys epäonnistui: {failing.map((s) => s.name).join(", ")}.
+            Näytetään viimeisin haettu tieto.
+          </p>
+        )}
       </header>
 
       <div className="flex items-center justify-between gap-3">
