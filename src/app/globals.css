@@ -2,7 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+/* Tumma tila seuraa laitteen asetusta (iPhone: Asetukset → Näyttö). */
+@custom-variant dark (@media (prefers-color-scheme: dark));
 
 /*
  * Arki – design-tokenit
@@ -10,10 +11,10 @@
  * Lämmin paperinen pohja, lähes musta vihertävä teksti ja murretut
  * tunnistevärit perheenjäsenille. Korostusvärejä käytetään vain pieninä
  * pisteinä ja viivoina. shadcn/ui-komponentit lukevat samoja muuttujia.
- * Tumma tila lisätään myöhemmin määrittelemällä samat muuttujat .dark-luokalle.
+ * Tumma tila määrittelee samat muuttujat uudelleen (alla).
  */
 :root {
-  color-scheme: light;
+  color-scheme: light dark;
 
   --background: #f7f4ee;
   --surface: #fcfbf8;
@@ -44,6 +45,37 @@
 
   --radius: 0.75rem;
   --nav-height: 4rem;
+}
+
+/*
+ * Tumma tila: lämmin, vihertävän tumma pohja – ei puhdasta mustaa.
+ * Tekstiparien kontrastit ≥ 4.5:1 (WCAG AA). Jäsenvärit vaaleammat,
+ * jotta pisteet erottuvat tummalla pohjalla.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #151816;
+    --surface: #1d211f;
+    --foreground: #ebe7df;
+    --muted-foreground: #a29d92; /* kontrasti taustaa vasten ~7:1 */
+    --border: #2b302d;
+    --input: #3a403c;
+    --ring: #8e9e95;
+
+    --primary: #e6e1d6;
+    --primary-foreground: #1a1e1b;
+    --secondary: #232825;
+    --secondary-foreground: #ebe7df;
+    --muted: #232825;
+    --accent: #262b28;
+    --accent-foreground: #ebe7df;
+    --destructive: #e38a76;
+
+    --member-sage: #8db39a;
+    --member-clay: #d4917a;
+    --member-slate: #8aa8c4;
+    --member-ochre: #d8b46a;
+  }
 }
 
 @theme inline {
