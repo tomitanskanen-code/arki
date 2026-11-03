@@ -44,7 +44,9 @@ async function TodayContent() {
     familyRepository.getMembers(),
     calendarRepository.getSources(),
     calendarRepository.getEvents(localDayRange(today)),
-    optional(schoolMenuProvider.getMenu(today), "Ruokalistan haku"),
+    schoolMenuProvider
+      ? optional(schoolMenuProvider.getMenu(today), "Ruokalistan haku")
+      : undefined,
   ])
   if (!family) return <NoFamilyNotice email={await getSignedInEmail()} />
   const weather = await optional(

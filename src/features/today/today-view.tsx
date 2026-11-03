@@ -27,7 +27,8 @@ export interface TodayData {
   sources: CalendarSource[]
   events: CalendarEvent[]
   weather: WeatherSnapshot | null
-  menu: SchoolMenuDay | null
+  /** undefined = ruokalistalähdettä ei ole, osio piilotetaan */
+  menu: SchoolMenuDay | null | undefined
 }
 
 /** Koskeeko tapahtuma vain lapsia (koulu tai lasten harrastus)? */
@@ -140,20 +141,22 @@ export function TodayView({
         </div>
 
         <div>
-          <Section title="Ruokalista">
-            {menu ? (
-              <div className="text-[15px]">
-                <p>{menu.mainDish}</p>
-                {menu.vegetarianDish && (
-                  <p className="mt-1 text-muted-foreground">
-                    Kasvisvaihtoehto: {menu.vegetarianDish}
-                  </p>
-                )}
-              </div>
-            ) : (
-              <p className="text-muted-foreground">Ei kouluruokaa tänään.</p>
-            )}
-          </Section>
+          {menu !== undefined && (
+            <Section title="Ruokalista">
+              {menu ? (
+                <div className="text-[15px]">
+                  <p>{menu.mainDish}</p>
+                  {menu.vegetarianDish && (
+                    <p className="mt-1 text-muted-foreground">
+                      Kasvisvaihtoehto: {menu.vegetarianDish}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-muted-foreground">Ei kouluruokaa tänään.</p>
+              )}
+            </Section>
+          )}
 
           <Section title="Kauppalista">
             <ShoppingPreview />

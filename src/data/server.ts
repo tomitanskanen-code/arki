@@ -42,7 +42,12 @@ export const calendarAdmin: CalendarAdminRepository = isSupabaseConfigured
   : mockCalendarAdmin
 
 export const weatherProvider: WeatherProvider = openMeteoWeatherProvider
-export const schoolMenuProvider: SchoolMenuProvider = mockSchoolMenuProvider
+/**
+ * Kouluruokalista. null = ei lähdettä, jolloin osio piilotetaan
+ * (tuotannossa ei näytetä keksittyä ruokalistaa).
+ */
+export const schoolMenuProvider: SchoolMenuProvider | null =
+  isSupabaseConfigured ? null : mockSchoolMenuProvider
 
 export const authEnabled = isSupabaseConfigured
 
