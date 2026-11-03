@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react"
 import type { Metadata } from "next"
+import { connection } from "next/server"
 import { Suspense } from "react"
 
 import { PageContainer, PageHeader, Section } from "@/components/layout/page"
@@ -38,6 +39,8 @@ export default function SettingsPage() {
 }
 
 async function SettingsContent() {
+  // Kirjautuneen käyttäjän tiedot ovat pyyntökohtaisia (Cache Components).
+  await connection()
   const [family, members, sources, email] = await Promise.all([
     familyRepository.getFamily(),
     familyRepository.getMembers(),
