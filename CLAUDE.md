@@ -23,9 +23,12 @@ Kerrokset (riippuvuudet vain alaspäin):
    Ei Reactia, ei I/O:ta. Kaikelle logiikalle yksikkötestit (`*.test.ts`).
 3. `src/data` – tietokerros. `repositories.ts` määrittelee rajapinnat;
    `server.ts` (palvelin, `import "server-only"`) ja `client.ts` (selain)
-   valitsevat toteutuksen. Vaiheessa 1 toteutukset ovat `data/mock/`-kansiossa.
-4. `src/integrations` (vaihe 2–3) – ulkoiset rajapinnat (Open-Meteo, ICS, Google).
-   Vain palvelinpuolella.
+   valitsevat toteutuksen (`data/mock/` tai `data/supabase/`).
+4. `src/integrations` – ulkoiset rajapinnat (Open-Meteo; vaiheessa 3 ICS,
+   Google). Vain palvelinpuolella.
+
+Tietokannan muutokset aina uutena tiedostona `supabase/migrations/`
+(aikaleima + kuvaava nimi). Älä muokkaa jo ajettua migraatiota.
 
 Käyttöliittymä ei koskaan tuo `data/mock`-moduuleja suoraan, vaan aina
 `data/server` tai `data/client`.
@@ -88,3 +91,19 @@ ohjelmia ei asenneta ilman käyttäjän erillistä hyväksyntää.
   `deepmerge`-löydökset hyväksytty (vain kehitystyökaluissa, ei tuotannossa;
   `npm audit --omit=dev` = 0). Tarkistetaan uudelleen päivitysten yhteydessä.
 - 2026-11: Tumma tila siirretty vaiheeseen 4; tokenit valmiina.
+- 2026-11 (vaihe 2): Ilman Supabase-ympäristömuuttujia sovellus toimii
+  esittelytilassa (mock-data, ei kirjautumista). Valinta `src/data/server.ts`
+  ja `src/data/client.ts` – `isSupabaseConfigured`.
+- 2026-11 (vaihe 2): Vain publishable key (selain + palvelin käyttäjän
+  istunnolla). Secret keytä ei käytetä; kaikki kyselyt kulkevat RLS:n läpi.
+  Perheen ja jäsenten luonti ylläpitäjänä SQL-editorissa.
+- 2026-11 (vaihe 2): Istunto päivitetään vain `src/proxy.ts`:ssä
+  (`getClaims`), ei palvelinkomponenteissa (refresh-tokenin uudelleenkäyttö).
+- 2026-11 (vaihe 2): Kalenteri on yhä mock-dataa; `data/mock/remap.ts` liittää
+  esimerkkitapahtumat oikeisiin jäseniin roolin/järjestyksen mukaan. Poistetaan
+  vaiheessa 3.
+- 2026-11 (vaihe 2): Kauppalistan Realtime: muutosilmoitus → lista luetaan
+  uudelleen (yksinkertainen ja luotettava). Lisäksi luku, kun sovellus palaa
+  taustalta (iOS katkaisee websocketin).
+- 2026-11 (vaihe 2): Supabasen oletus-SMTP lähettää vain tiimin jäsenille –
+  toisen vanhemman käyttöönotto vaatii oman SMTP-palvelun.

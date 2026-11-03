@@ -4,8 +4,10 @@ Perheen yksityinen, mobiililähtöinen arjenhallintasovellus (PWA). Kokoaa yhtee
 päivän menot, lasten koulupäivät ja harrastukset, sään, kouluruokalistan ja
 yhteisen kauppalistan.
 
-> **Tila: vaihe 1.** Käyttöliittymä toimii esimerkkidatalla. Kirjautumista,
-> tietokantaa ja oikeita kalenteri-integraatioita ei vielä ole.
+> **Tila: vaihe 2.** Kirjautuminen sähköpostikoodilla, perhe ja reaaliaikainen
+> kauppalista Supabasessa, sää Open-Meteosta. Kalenterit ja ruokalista ovat
+> vielä esimerkkidataa. Ilman Supabase-asetuksia sovellus käynnistyy
+> esittelytilaan. Käyttöönotto: [docs/KAYTTOONOTTO.md](docs/KAYTTOONOTTO.md).
 
 ## Käynnistys
 
@@ -43,8 +45,8 @@ service worker vaativat HTTPS:n, joten ne testataan vasta Vercel-julkaisusta
 ## Teknologiat
 
 Next.js 16 (App Router, Cache Components) · React 19 · TypeScript · Tailwind CSS 4 ·
-shadcn/ui (Base UI) · date-fns · Vitest. Tulossa: Supabase (PostgreSQL, Auth,
-Realtime) ja Vercel.
+shadcn/ui (Base UI) · date-fns · Vitest · Supabase (PostgreSQL, Auth,
+Realtime) · Open-Meteo · Vercel.
 
 ## Rakenne
 
@@ -55,9 +57,12 @@ src/
   components/     Yleiset UI-osat (layout/, ui/ = shadcn)
   features/       Näkymäkohtaiset komponentit (today, calendar, shopping, …)
   domain/         Tietomalli ja liiketoimintalogiikka (puhdas TS, testattu)
-  data/           Tietokerros: rajapinnat, server.ts / client.ts, mock/
-  lib/            Apufunktiot (aika ja Helsinki-aikavyöhyke)
+  data/           Tietokerros: rajapinnat, server.ts / client.ts, mock/, supabase/
+  integrations/   Ulkoiset palvelut (open-meteo/), vain palvelimella
+  lib/            Apufunktiot (aika, Supabase-asiakkaat)
+  proxy.ts        Istunnon päivitys ja ohjaus kirjautumiseen
 public/sw.js      Service worker (vain staattinen sovellusrunko)
+supabase/         Tietokantamigraatiot ja perheen luontipohja
 docs/             Siirto-ohje ja muu dokumentaatio
 ```
 
@@ -66,14 +71,15 @@ Siirto toiselle koneelle: [docs/SIIRTO.md](docs/SIIRTO.md).
 
 ## Toteutusvaiheet
 
-1. **Käyttöliittymä ja perusta** – valmis (esimerkkidata)
-2. Supabase-tietokanta, kirjautuminen, reaaliaikainen kauppalista,
-   Open-Meteo-sää, Vercel-julkaisu
+1. **Käyttöliittymä ja perusta** – valmis
+2. **Supabase-tietokanta, kirjautuminen, reaaliaikainen kauppalista,
+   Open-Meteo-sää, Vercel-julkaisu** – koodi valmis, käyttöönotto kesken
 3. Kalenteri-integraatiot: Google (iCal / OAuth), Wilma iCal, myClub iCal
 4. Kouluruokalistan integraatio, viimeistely, testaus iOS-laitteilla
 
 ## Ympäristömuuttujat
 
-Vaihe 1 ei tarvitse ympäristömuuttujia. Malli: [.env.example](.env.example).
+Malli: [.env.example](.env.example). Ilman arvoja sovellus toimii
+esittelytilassa.
 Salaisuudet kuuluvat vain tiedostoon `.env.local` (ei Gitiin) ja Vercelin
 asetuksiin.
