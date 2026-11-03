@@ -107,6 +107,40 @@ sähköpostipohjia ei tarvita.
    eivät jaa kirjautumista, joten kirjaudu sovelluksessa vielä kerran.
    iPhone tarjoaa tallentamaan salasanan avainnippuun.
 
+## 8. Kalenterit (vaihe 3)
+
+Tee kohdat **tässä järjestyksessä**: tietokanta ja avain ensin, sitten
+julkaisu, lopuksi syötteet.
+
+1. **Migraatio:** Supabase → SQL Editor → aja
+   `supabase/migrations/20261104120000_kalenterit.sql`.
+2. **Salausavain:** aja projektikansiossa
+   ```bash
+   node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+   ```
+   ja lisää tulos
+   - `.env.local`-tiedostoon riville `FEED_ENCRYPTION_KEY=…`
+   - Verceliin: Settings → Environment Variables → `FEED_ENCRYPTION_KEY`
+     (Production ja Preview).
+     Tallenna avain myös salasanojen hallintaan. **Älä liitä sitä
+     keskusteluun.** Jos avain katoaa, syötteet pitää lisätä uudelleen.
+3. **Julkaisu:** kun 1–2 on tehty, uusi versio voidaan pushata (Vercel
+   julkaisee automaattisesti). Uudelleenjulkaisu tarvitaan joka tapauksessa,
+   jotta Vercel ottaa uuden ympäristömuuttujan käyttöön.
+4. **Syötteet:** Arki → Asetukset → Kalenterit → **Lisää kalenterisyöte**:
+   - **Wilma:** Wilma → Työjärjestys → kalenterin vienti / tilauslinkki.
+   - **myClub:** ryhmän kalenteri → "Tilaa tapahtumat kalenteriisi".
+   - **Google:** Google Kalenteri → Asetukset → kalenteri → Integroi
+     kalenteri → **Salainen osoite iCal-muodossa**.
+     Valitse kenelle kalenteri kuuluu. Osoite salataan eikä sitä näytetä
+     uudelleen. Liitä osoitteet **vain sovellukseen**, ei keskusteluun.
+5. **Viikkorytmi:** Asetukset → Viikkorytmi (esim. esikoulu: päivät ja
+   kellonajat).
+
+Syötteet päivittyvät automaattisesti, kun sovellus avataan ja edellisestä
+hausta on yli 15 minuuttia. Asetuksissa näkyy jokaisen syötteen tila; ↻
+päivittää heti.
+
 ## Varmuuskopiot
 
 Supabasen ilmaistasossa ei ole ladattavia varmuuskopioita. Rakenne on

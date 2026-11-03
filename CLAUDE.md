@@ -103,9 +103,25 @@ ohjelmia ei asenneta ilman käyttäjän erillistä hyväksyntää.
   Perheen ja jäsenten luonti ylläpitäjänä SQL-editorissa.
 - 2026-11 (vaihe 2): Istunto päivitetään vain `src/proxy.ts`:ssä
   (`getClaims`), ei palvelinkomponenteissa (refresh-tokenin uudelleenkäyttö).
-- 2026-11 (vaihe 2): Kalenteri on yhä mock-dataa; `data/mock/remap.ts` liittää
-  esimerkkitapahtumat oikeisiin jäseniin roolin/järjestyksen mukaan. Poistetaan
-  vaiheessa 3.
+- 2026-11 (vaihe 3): Kaikki kalenterit ICS-syötteinä samalla lukijalla
+  (`integrations/ics`, ical.js). Syötteen osoite salataan (AES-256-GCM,
+  `FEED_ENCRYPTION_KEY`, `lib/crypto.ts`); selaimeen ei koskaan palauteta.
+  SSRF: sallitut palvelimet (`inschool.fi`, `myclub.fi`,
+  `calendar.google.com`), DNS-tarkistus, tarkistetut uudelleenohjaukset.
+  Tunnettu rajoitus: DNS-tarkistuksen ja yhteyden välinen aikaikkuna (DNS
+  rebinding) – hyväksytty, koska palvelinlista on rajattu tunnettuihin
+  palveluihin.
+- 2026-11 (vaihe 3): Synkronointi tarvittaessa (15 min). Ensimmäinen haku
+  heti, myöhemmät `after()`-taustatyönä; lukitus `last_attempt_at`-sarakkeella;
+  poistuneet tapahtumat siivotaan `sync_token`-kierrostunnuksella. Virheessä
+  vanhat tapahtumat säilyvät. Tapahtumien henkilö tulee lähteen `member_id`:stä.
+- 2026-11 (vaihe 3): Saman lähteen duplikaatit estää tietokannan uniikkiavain;
+  eri lähteiden samat tapahtumat (otsikko + aika) yhdistetään näytettäessä
+  (`mergeDuplicateEvents`, tarkin lähde ensin).
+- 2026-11 (vaihe 3): Esikoulu ym. ilman syötettä: `manual_schedules`
+  (viikonpäivä + kellonajat), laajennetaan tapahtumiksi lennossa.
+- 2026-11 (vaihe 3): Google OAuth ei käytössä; salainen iCal-osoite riittää
+  lukemiseen. OAuth harkitaan vasta, jos tarvitaan kirjoitusta.
 - 2026-11 (vaihe 2): iOS-kotinäyttösovellus vaatii `apple-mobile-web-app-capable`
   -merkinnän (`metadata.other` layoutissa); Next.js tuottaa vain
   etuliitteettömän. Uusissa iOS-versioissa myös "Avaa verkkoappina" -kytkin

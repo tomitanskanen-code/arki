@@ -4,10 +4,12 @@ Perheen yksityinen, mobiililähtöinen arjenhallintasovellus (PWA). Kokoaa yhtee
 päivän menot, lasten koulupäivät ja harrastukset, sään, kouluruokalistan ja
 yhteisen kauppalistan.
 
-> **Tila: vaihe 2.** Kirjautuminen sähköpostilla ja salasanalla, perhe ja reaaliaikainen
-> kauppalista Supabasessa, sää Open-Meteosta. Kalenterit ja ruokalista ovat
-> vielä esimerkkidataa. Ilman Supabase-asetuksia sovellus käynnistyy
-> esittelytilaan. Käyttöönotto: [docs/KAYTTOONOTTO.md](docs/KAYTTOONOTTO.md).
+> **Tila: vaihe 3.** Kirjautuminen sähköpostilla ja salasanalla, perhe,
+> reaaliaikainen kauppalista ja kalenterit (Wilma, myClub, Google iCal,
+> käsin syötetty viikkorytmi) Supabasessa, sää Open-Meteosta.
+> Kouluruokalista on vielä esimerkkidataa. Ilman Supabase-asetuksia sovellus
+> käynnistyy esittelytilaan. Käyttöönotto:
+> [docs/KAYTTOONOTTO.md](docs/KAYTTOONOTTO.md).
 
 ## Käynnistys
 
@@ -58,7 +60,7 @@ src/
   features/       Näkymäkohtaiset komponentit (today, calendar, shopping, …)
   domain/         Tietomalli ja liiketoimintalogiikka (puhdas TS, testattu)
   data/           Tietokerros: rajapinnat, server.ts / client.ts, mock/, supabase/
-  integrations/   Ulkoiset palvelut (open-meteo/), vain palvelimella
+  integrations/   Ulkoiset palvelut (open-meteo/, ics/), vain palvelimella
   lib/            Apufunktiot (aika, Supabase-asiakkaat)
   proxy.ts        Istunnon päivitys ja ohjaus kirjautumiseen
 public/sw.js      Service worker (vain staattinen sovellusrunko)
@@ -75,7 +77,8 @@ Siirto toiselle koneelle: [docs/SIIRTO.md](docs/SIIRTO.md).
 2. **Supabase-tietokanta, kirjautuminen, reaaliaikainen kauppalista,
    Open-Meteo-sää, Vercel-julkaisu** – valmis, käytössä molemmilla
    vanhemmilla ja iPhonen kotinäytöltä
-3. Kalenteri-integraatiot: Google (iCal / OAuth), Wilma iCal, myClub iCal
+3. **Kalenteri-integraatiot: Wilma, myClub ja Google (iCal), viikkorytmi** –
+   koodi valmis, käyttöönotto kesken
 4. Kouluruokalistan integraatio, viimeistely, testaus iOS-laitteilla
 
 ## Ympäristömuuttujat
