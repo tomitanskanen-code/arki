@@ -60,7 +60,23 @@ Käyttöliittymä ei koskaan tuo `data/mock`-moduuleja suoraan, vaan aina
 - Service worker tallentaa välimuistiin vain staattisen rungon – ei HTML:ää,
   API-vastauksia eikä kalenteritietoja.
 - Supabase: kaikissa tauluissa RLS, käytäntö "vain oman perheen rivit".
-  Itserekisteröinti pois päältä, käyttäjät kutsutaan.
+  Itserekisteröinti pois päältä, tunnukset luodaan ylläpitäjänä.
+- Server Actionit ovat julkisia HTTP-päätepisteitä: tarkista jokainen arvo
+  palvelimella (esim. jäsen kuuluu perheeseen) ja luota RLS:ään toisena
+  kerroksena. Proxy ohjaa kirjautumattomat pois myös action-pyynnöistä.
+- Tarkista ennen julkaisua, ettei selainkoodissa (`.next/static`) ole
+  salaisuuksia (`FEED_ENCRYPTION_KEY`, salauskoodi).
+- Tunnettu rajoitus: sivuilla ei ole Content-Security-Policya (Next.js:n
+  inline-skriptit vaativat nonce-toteutuksen). React escapoi kaiken sisällön,
+  eikä `dangerouslySetInnerHTML`-käyttöä ole. Harkitaan myöhemmin.
+
+### Tietoturvakatselmointi 2026-11 (vaihe 4)
+
+Käyty läpi: kirjautuminen ja istunto (proxy + `getClaims`), RLS kaikissa
+tauluissa (anon-pääsy torjuttu, tarkistettu REST-rajapinnasta), Server
+Actionien syötteiden tarkistus, syöteosoitteiden salaus ja SSRF-suojaus,
+service workerin välimuisti, selainkoodin salaisuudet, XSS. Ei avoimia
+löydöksiä; CSP kirjattu tunnetuksi rajoitukseksi.
 
 ## Riippumattomuus työnantajan ympäristöstä
 
@@ -120,6 +136,15 @@ ohjelmia ei asenneta ilman käyttäjän erillistä hyväksyntää.
   (`mergeDuplicateEvents`, tarkin lähde ensin).
 - 2026-11 (vaihe 3): Esikoulu ym. ilman syötettä: `manual_schedules`
   (viikonpäivä + kellonajat), laajennetaan tapahtumiksi lennossa.
+- 2026-11 (vaihe 4): Kouluruokalista: Porvoon Aromi-RSS
+  (`/api/Common/Restaurant/GetRssFeed/{id}/{mode}`) on olemassa mutta tyhjä;
+  sivuston oma `RestaurantMeals`-rajapinta on dokumentoimaton. Käyttäjän
+  päätöksellä Tänään-näkymässä vain linkki ruokalistaan (`schoolMenuLink`).
+  Jos Porvoo ottaa RSS:n käyttöön, toteutetaan `SchoolMenuProvider`.
+- 2026-11 (vaihe 4): Tumma tila seuraa laitteen asetusta
+  (`prefers-color-scheme`), ei erillistä valitsinta.
+- 2026-11 (vaihe 4): Kotinäyttösovellus päivittää näkymän palatessaan
+  taustalta yli 5 min jälkeen tai päivän vaihduttua (`RefreshOnReturn`).
 - 2026-11 (vaihe 3): Google OAuth ei käytössä; salainen iCal-osoite riittää
   lukemiseen. OAuth harkitaan vasta, jos tarvitaan kirjoitusta.
 - 2026-11 (vaihe 2): iOS-kotinäyttösovellus vaatii `apple-mobile-web-app-capable`

@@ -10,6 +10,16 @@ import { type FormState, saveManualScheduleAction } from "./calendar-actions"
 import { fieldClass, primaryButtonClass } from "./form-styles"
 
 const WEEKDAYS = ["ma", "ti", "ke", "to", "pe", "la", "su"]
+// Ruudunlukijalle täydet nimet lyhenteiden sijaan
+const WEEKDAY_NAMES = [
+  "maanantai",
+  "tiistai",
+  "keskiviikko",
+  "torstai",
+  "perjantai",
+  "lauantai",
+  "sunnuntai",
+]
 
 /**
  * Käsin syötettävä viikkorytmi (esim. esikoulu), kun lapsella ei ole
@@ -72,9 +82,11 @@ export function ManualScheduleForm({
                 defaultChecked={
                   own.length > 0 ? own.some((e) => e.weekday === i + 1) : i < 5
                 }
+                aria-label={WEEKDAY_NAMES[i]}
                 className="peer sr-only"
               />
               <span
+                aria-hidden
                 className={cn(
                   "flex size-11 items-center justify-center rounded-full border text-sm capitalize transition-colors",
                   "peer-checked:border-foreground/80 peer-checked:bg-foreground/[0.06] peer-checked:font-medium",

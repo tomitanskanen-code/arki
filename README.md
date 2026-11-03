@@ -4,12 +4,13 @@ Perheen yksityinen, mobiililähtöinen arjenhallintasovellus (PWA). Kokoaa yhtee
 päivän menot, lasten koulupäivät ja harrastukset, sään, kouluruokalistan ja
 yhteisen kauppalistan.
 
-> **Tila: vaihe 3.** Kirjautuminen sähköpostilla ja salasanalla, perhe,
+> **Tila: vaihe 4.** Kirjautuminen sähköpostilla ja salasanalla, perhe,
 > reaaliaikainen kauppalista ja kalenterit (Wilma, myClub, Google iCal,
-> käsin syötetty viikkorytmi) Supabasessa, sää Open-Meteosta.
-> Kouluruokalista on vielä esimerkkidataa. Ilman Supabase-asetuksia sovellus
+> käsin syötetty viikkorytmi) Supabasessa, sää Open-Meteosta, linkki
+> kouluruokalistaan, tumma tila. Ilman Supabase-asetuksia sovellus
 > käynnistyy esittelytilaan. Käyttöönotto:
-> [docs/KAYTTOONOTTO.md](docs/KAYTTOONOTTO.md).
+> [docs/KAYTTOONOTTO.md](docs/KAYTTOONOTTO.md), iPhone-testaus:
+> [docs/IOS-TESTAUS.md](docs/IOS-TESTAUS.md).
 
 ## Käynnistys
 
@@ -79,7 +80,18 @@ Siirto toiselle koneelle: [docs/SIIRTO.md](docs/SIIRTO.md).
    vanhemmilla ja iPhonen kotinäytöltä
 3. **Kalenteri-integraatiot: Wilma, myClub ja Google (iCal), viikkorytmi** –
    valmis, käytössä
-4. Kouluruokalistan integraatio, viimeistely, testaus iOS-laitteilla
+4. **Viimeistely: kouluruokalistan linkki, tumma tila, päivitys taustalta
+   palatessa, tietoturva- ja saavutettavuuskatselmointi** – valmis
+
+### Jatkokehitysideoita
+
+- Kouluruokalista suoraan sovellukseen, jos Porvoo ottaa Aromin RSS-syötteen
+  käyttöön (rajapinta `SchoolMenuProvider` on valmiina).
+- Tapahtumien lisääminen Arkista Google-kalenteriin (vaatii Google OAuthin).
+- Push-ilmoitukset, esim. "Hugolla treenit klo 17" (iOS 16.4+ tukee
+  kotinäyttösovelluksissa).
+- Content-Security-Policy nonce-toteutuksella.
+- Supabasen datan automaattinen varmuuskopiointi (esim. ajastettu vienti).
 
 ## Ympäristömuuttujat
 
