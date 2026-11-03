@@ -4,34 +4,42 @@ import { openMeteoWeatherProvider } from "@/integrations/open-meteo/provider"
 import { isSupabaseConfigured } from "@/lib/supabase/config"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 
+import { mockCalendarAdmin } from "./mock/calendar-admin"
 import { mockCalendarRepository, mockFamilyRepository } from "./mock/family"
-import { remapMockCalendar } from "./mock/remap"
 import { mockSchoolMenuProvider } from "./mock/school-menu"
 import type {
+  CalendarAdminRepository,
   CalendarRepository,
   FamilyRepository,
   SchoolMenuProvider,
   WeatherProvider,
 } from "./repositories"
+import {
+  supabaseCalendarAdmin,
+  supabaseCalendarRepository,
+} from "./supabase/calendar"
 import { supabaseFamilyRepository } from "./supabase/family"
 
 /**
  * Palvelinpuolen tietolähteet. Tämä on ainoa kohta, jossa valitaan
  * toteutus. "server-only" estää tiedoston päätymisen selaimen koodiin.
  *
- * - Supabase määritelty → perhe tietokannasta, kirjautuminen pakollinen.
+ * - Supabase määritelty → perhe ja kalenterit tietokannasta, kirjautuminen
+ *   pakollinen.
  * - Ei määritelty → esittelytila esimerkkidatalla (paikallinen kehitys).
- * Kalenteri ja ruokalista ovat vielä esimerkkidataa (vaiheet 3–4).
+ * Ruokalista on vielä esimerkkidataa (vaihe 4).
  */
 export const familyRepository: FamilyRepository = isSupabaseConfigured
   ? supabaseFamilyRepository
   : mockFamilyRepository
 
 export const calendarRepository: CalendarRepository = isSupabaseConfigured
-  ? remapMockCalendar(mockCalendarRepository, () =>
-      supabaseFamilyRepository.getMembers(),
-    )
+  ? supabaseCalendarRepository
   : mockCalendarRepository
+
+export const calendarAdmin: CalendarAdminRepository = isSupabaseConfigured
+  ? supabaseCalendarAdmin
+  : mockCalendarAdmin
 
 export const weatherProvider: WeatherProvider = openMeteoWeatherProvider
 export const schoolMenuProvider: SchoolMenuProvider = mockSchoolMenuProvider

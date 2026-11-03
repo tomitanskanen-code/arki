@@ -6,6 +6,21 @@ import { cookies } from "next/headers"
 import { supabasePublishableKey, supabaseUrl } from "./config"
 
 /**
+ * Asiakas taustatyölle (next/server `after`), joka ajetaan vastauksen
+ * jälkeen. Evästeet luetaan valmiiksi, koska palvelinkomponentti ei saa
+ * lukea niitä after-kutsun sisällä. Istuntoa ei päivitetä (proxy hoitaa).
+ */
+export async function createSupabaseBackgroundClient() {
+  const snapshot = (await cookies()).getAll()
+  return createServerClient(supabaseUrl, supabasePublishableKey, {
+    cookies: {
+      getAll: () => snapshot,
+      setAll: () => {},
+    },
+  })
+}
+
+/**
  * Supabase-asiakas palvelinkomponenteille ja Server Actioneille.
  * Luodaan pyyntökohtaisesti, koska se lukee pyynnön evästeet.
  */

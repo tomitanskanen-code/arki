@@ -1,9 +1,11 @@
 import type {
   CalendarEvent,
   CalendarSource,
+  CalendarSourceKind,
   Family,
   FamilyMember,
   HomeLocation,
+  ManualScheduleEntry,
   SchoolMenuDay,
   ShoppingListItem,
   WeatherSnapshot,
@@ -29,6 +31,31 @@ export interface CalendarRepository {
   getSources(): Promise<CalendarSource[]>
   /** Tapahtumat, jotka osuvat annetulle aikavälille. */
   getEvents(range: InstantRange): Promise<CalendarEvent[]>
+}
+
+export interface NewCalendarSource {
+  kind: Exclude<CalendarSourceKind, "manual">
+  name: string
+  memberId: string | null
+  /** Syötteen osoite. Salataan ennen tallennusta, ei palauteta koskaan. */
+  url: string
+}
+
+export interface ManualScheduleInput {
+  memberId: string
+  title: string
+  days: { weekday: number; startTime: string; endTime: string }[]
+}
+
+/** Kalenterilähteiden hallinta (vain palvelimella, Server Actioneista). */
+export interface CalendarAdminRepository {
+  /** Lisää lähteen ja hakee sen heti. Palauttaa virheen tekstinä. */
+  addSource(input: NewCalendarSource): Promise<{ error: string | null }>
+  removeSource(id: string): Promise<void>
+  refreshSource(id: string): Promise<void>
+  getManualSchedules(): Promise<ManualScheduleEntry[]>
+  /** Korvaa jäsenen koko viikkorytmin. Tyhjä days poistaa rytmin. */
+  setManualSchedule(input: ManualScheduleInput): Promise<void>
 }
 
 export interface WeatherProvider {
