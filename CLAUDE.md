@@ -106,6 +106,10 @@ ohjelmia ei asenneta ilman käyttäjän erillistä hyväksyntää.
 - 2026-11 (vaihe 2): Kalenteri on yhä mock-dataa; `data/mock/remap.ts` liittää
   esimerkkitapahtumat oikeisiin jäseniin roolin/järjestyksen mukaan. Poistetaan
   vaiheessa 3.
+- 2026-11 (vaihe 2): iOS-kotinäyttösovellus vaatii `apple-mobile-web-app-capable`
+  -merkinnän (`metadata.other` layoutissa); Next.js tuottaa vain
+  etuliitteettömän. Uusissa iOS-versioissa myös "Avaa verkkoappina" -kytkin
+  päälle kuvaketta lisättäessä.
 - 2026-11 (vaihe 2): Kauppalistan Realtime: muutosilmoitus → lista luetaan
   uudelleen (yksinkertainen ja luotettava). Lisäksi luku, kun sovellus palaa
   taustalta (iOS katkaisee websocketin).

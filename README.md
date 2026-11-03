@@ -73,8 +73,8 @@ Siirto toiselle koneelle: [docs/SIIRTO.md](docs/SIIRTO.md).
 
 1. **Käyttöliittymä ja perusta** – valmis
 2. **Supabase-tietokanta, kirjautuminen, reaaliaikainen kauppalista,
-   Open-Meteo-sää, Vercel-julkaisu** – valmis (iPhone-testaus ja toisen
-   vanhemman tunnus kesken)
+   Open-Meteo-sää, Vercel-julkaisu** – valmis, käytössä molemmilla
+   vanhemmilla ja iPhonen kotinäytöltä
 3. Kalenteri-integraatiot: Google (iCal / OAuth), Wilma iCal, myClub iCal
 4. Kouluruokalistan integraatio, viimeistely, testaus iOS-laitteilla
 
