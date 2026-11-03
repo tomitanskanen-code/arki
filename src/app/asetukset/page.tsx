@@ -112,7 +112,7 @@ async function SettingsContent() {
                   {SOURCE_KIND_LABELS[s.kind]}
                   {s.urlHost && ` · ${s.urlHost}`}
                 </p>
-                <p className="mt-0.5 text-sm text-muted-foreground">
+                <div className="mt-0.5 text-sm text-muted-foreground">
                   Kenelle:{" "}
                   {authEnabled ? (
                     <SourceMemberSelect
@@ -126,7 +126,7 @@ async function SettingsContent() {
                   ) : (
                     "Koko perhe"
                   )}
-                </p>
+                </div>
                 <p
                   className={cn(
                     "mt-0.5 text-sm",

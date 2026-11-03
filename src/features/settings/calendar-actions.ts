@@ -33,12 +33,22 @@ async function validMemberId(value: FormDataEntryValue | null) {
   return members.some((m) => m.id === value) ? value : undefined
 }
 
-export async function updateSourceMemberAction(formData: FormData) {
-  const id = formData.get("id")
-  const memberId = await validMemberId(formData.get("memberId"))
-  if (typeof id !== "string" || memberId === undefined) return
-  await calendarAdmin.updateSourceMember(id, memberId)
+export async function updateSourceMemberAction(
+  sourceId: string,
+  memberValue: string,
+): Promise<{ error: string | null }> {
+  const memberId = await validMemberId(memberValue)
+  if (typeof sourceId !== "string" || memberId === undefined) {
+    return { error: "Valinta ei kelpaa." }
+  }
+  try {
+    await calendarAdmin.updateSourceMember(sourceId, memberId)
+  } catch (error) {
+    console.error("Kalenterin henkilön vaihto epäonnistui", error)
+    return { error: "Tallennus epäonnistui." }
+  }
   refresh()
+  return { error: null }
 }
 
 export async function addSourceAction(

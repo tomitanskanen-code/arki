@@ -293,11 +293,16 @@ export const supabaseCalendarAdmin: CalendarAdminRepository = {
 
   async updateSourceMember(id, memberId) {
     const supabase = await createSupabaseServerClient()
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("calendar_sources")
       .update({ member_id: memberId })
       .eq("id", id)
+      .select("id, member_id")
     if (error) throw error
+    // RLS voi estää päivityksen ilman virhettä: varmistetaan, että rivi muuttui.
+    if (data.length !== 1 || data[0].member_id !== memberId) {
+      throw new Error(`Kalenterin ${id} henkilön päivitys ei tallentunut`)
+    }
   },
 
   async refreshSource(id) {
