@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Arki
 
-## Getting Started
+Perheen yksityinen, mobiililähtöinen arjenhallintasovellus (PWA). Kokoaa yhteen
+päivän menot, lasten koulupäivät ja harrastukset, sään, kouluruokalistan ja
+yhteisen kauppalistan.
 
-First, run the development server:
+> **Tila: vaihe 1.** Käyttöliittymä toimii esimerkkidatalla. Kirjautumista,
+> tietokantaa ja oikeita kalenteri-integraatioita ei vielä ole.
+
+## Käynnistys
+
+Vaatimukset: Node.js 20.9 tai uudempi (kehityksessä 24 LTS) ja Git.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Avaa selaimessa <http://localhost:3000>. Mobiilinäkymän saat selaimen
+kehitystyökaluista (esim. Chrome: F12 → laitetila → iPhone).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Puhelimella samassa lähiverkossa
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev -- --hostname 0.0.0.0
+```
 
-## Learn More
+Avaa puhelimessa `http://<tietokoneen-ip>:3000`. Kotinäytölle lisääminen ja
+service worker vaativat HTTPS:n, joten ne testataan vasta Vercel-julkaisusta
+(vaihe 2).
 
-To learn more about Next.js, take a look at the following resources:
+## Komennot
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Komento          | Tarkoitus                               |
+| ---------------- | --------------------------------------- |
+| `npm run dev`    | Kehityspalvelin (http://localhost:3000) |
+| `npm run build`  | Tuotantobuild                           |
+| `npm start`      | Tuotantobuildin ajo paikallisesti       |
+| `npm run check`  | Lint + tyyppitarkistus + testit         |
+| `npm test`       | Yksikkötestit (Vitest)                  |
+| `npm run format` | Koodin muotoilu (Prettier)              |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Teknologiat
 
-## Deploy on Vercel
+Next.js 16 (App Router, Cache Components) · React 19 · TypeScript · Tailwind CSS 4 ·
+shadcn/ui (Base UI) · date-fns · Vitest. Tulossa: Supabase (PostgreSQL, Auth,
+Realtime) ja Vercel.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Rakenne
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+  app/            Reitit: / (Tänään), /kalenteri, /kauppalista, /asetukset,
+                  manifest, ikonit, virhesivut
+  components/     Yleiset UI-osat (layout/, ui/ = shadcn)
+  features/       Näkymäkohtaiset komponentit (today, calendar, shopping, …)
+  domain/         Tietomalli ja liiketoimintalogiikka (puhdas TS, testattu)
+  data/           Tietokerros: rajapinnat, server.ts / client.ts, mock/
+  lib/            Apufunktiot (aika ja Helsinki-aikavyöhyke)
+public/sw.js      Service worker (vain staattinen sovellusrunko)
+docs/             Siirto-ohje ja muu dokumentaatio
+```
+
+Tarkempi arkkitehtuuri ja periaatteet: [CLAUDE.md](CLAUDE.md).
+Siirto toiselle koneelle: [docs/SIIRTO.md](docs/SIIRTO.md).
+
+## Toteutusvaiheet
+
+1. **Käyttöliittymä ja perusta** – valmis (esimerkkidata)
+2. Supabase-tietokanta, kirjautuminen, reaaliaikainen kauppalista,
+   Open-Meteo-sää, Vercel-julkaisu
+3. Kalenteri-integraatiot: Google (iCal / OAuth), Wilma iCal, myClub iCal
+4. Kouluruokalistan integraatio, viimeistely, testaus iOS-laitteilla
+
+## Ympäristömuuttujat
+
+Vaihe 1 ei tarvitse ympäristömuuttujia. Malli: [.env.example](.env.example).
+Salaisuudet kuuluvat vain tiedostoon `.env.local` (ei Gitiin) ja Vercelin
+asetuksiin.

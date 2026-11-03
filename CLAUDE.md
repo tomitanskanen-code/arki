@@ -1,0 +1,90 @@
+@AGENTS.md
+
+# Arki – ohjeet Claude Codelle
+
+Perheen yksityinen arjenhallinta-PWA. Käyttäjinä kaksi vanhempaa, mukana kahden
+kouluikäisen lapsen tietoja. Käyttöliittymän kieli on **suomi**. Koodin
+kommentit suomeksi, tunnisteet (muuttujat, funktiot) englanniksi.
+
+## Komennot
+
+- `npm run dev` – kehityspalvelin, http://localhost:3000
+- `npm run check` – lint + `next typegen && tsc` + Vitest. Aja ennen committia.
+- `npm run build` – tuotantobuild (tarkistaa myös Cache Components -säännöt)
+
+## Arkkitehtuuri
+
+Yksi Next.js-sovellus (App Router). Ei mikropalveluita, ei monorepoa.
+
+Kerrokset (riippuvuudet vain alaspäin):
+
+1. `src/app`, `src/features`, `src/components` – käyttöliittymä
+2. `src/domain` – tietomalli (`types.ts`) ja puhdas liiketoimintalogiikka.
+   Ei Reactia, ei I/O:ta. Kaikelle logiikalle yksikkötestit (`*.test.ts`).
+3. `src/data` – tietokerros. `repositories.ts` määrittelee rajapinnat;
+   `server.ts` (palvelin, `import "server-only"`) ja `client.ts` (selain)
+   valitsevat toteutuksen. Vaiheessa 1 toteutukset ovat `data/mock/`-kansiossa.
+4. `src/integrations` (vaihe 2–3) – ulkoiset rajapinnat (Open-Meteo, ICS, Google).
+   Vain palvelinpuolella.
+
+Käyttöliittymä ei koskaan tuo `data/mock`-moduuleja suoraan, vaan aina
+`data/server` tai `data/client`.
+
+## Keskeiset periaatteet
+
+- **Aika:** ajanhetket UTC-ISO-merkkijonoina, kalenteripäivät `LocalDate`
+  ("YYYY-MM-DD") Europe/Helsinki-aikaa. Käytä aina `src/lib/dates.ts`-funktioita,
+  älä `new Date().getDate()` tms. (palvelin on UTC:ssä). Testit ajetaan UTC:ssä.
+- **Koko päivän tapahtumat:** `endDate` on ensimmäinen päivä, jota tapahtuma ei
+  koske (iCal-käytäntö).
+- **Cache Components on päällä:** pyynnön aikaan sidottu data (tänään, cookies,
+  searchParams) haetaan `<Suspense>`-rajan sisällä; `await connection()` ennen
+  `new Date()`-käyttöä palvelinkomponentissa.
+- **Tyyli:** pohjoismainen, rauhallinen. Osiot ja ohuet viivat korttien sijaan.
+  Värit vain tokeneista (`globals.css`), jäsenvärit `bg-member-*`.
+  Kosketusalueet ≥ 44 px. Safe area: `pt-safe`, `pb-safe`.
+- **Yksinkertaisuus:** toimiva ja ylläpidettävä ratkaisu ennen hienostelua.
+  Ei tarpeettomia ominaisuuksia (esim. kauppalistaan ei tuoterekisteriä).
+
+## Tietoturva ja yksityisyys
+
+- Ei salaisuuksia Gitiin. Mallipohja `.env.example`; arvot `.env.local`-tiedostoon
+  ja Verceliin. Älä koskaan pyydä käyttäjää liittämään salaisuuksia keskusteluun.
+- iCal/ICS-tilauslinkit ovat salaisuuksia: haetaan vain palvelimella, salataan
+  tietokannassa (AES-GCM, `FEED_ENCRYPTION_KEY`), ei koskaan selaimeen.
+- Ulkoisten URL-osoitteiden haku: vain https, sallittujen palvelinten lista,
+  yksityisten IP-osoitteiden esto (SSRF), aikakatkaisu ja kokoraja.
+- Service worker tallentaa välimuistiin vain staattisen rungon – ei HTML:ää,
+  API-vastauksia eikä kalenteritietoja.
+- Supabase: kaikissa tauluissa RLS, käytäntö "vain oman perheen rivit".
+  Itserekisteröinti pois päältä, käyttäjät kutsutaan.
+
+## Riippumattomuus työnantajan ympäristöstä
+
+Kehitetään työnantajan koneella, mutta sovellus on täysin henkilökohtainen:
+GitHub-tili `tomitanskanen-code` (yksityinen repo), henkilökohtaiset Vercel-,
+Supabase- ja Google Cloud -projektit. Ei organisaation tunnuksia, Azurea, Entra
+ID:tä tai VPN-riippuvuuksia. Sovelluksella ei ole Claude API -riippuvuutta.
+Git-identiteetti on asetettu vain tähän repoon. Projekti ei ole OneDrivessa.
+
+## Riippuvuudet
+
+Uudet npm-paketit vain tunnetuista, ylläpidetyistä lähteistä. Kerro käyttäjälle
+mitä ja miksi, ja aja `npm audit` asennuksen jälkeen. Järjestelmätason
+ohjelmia ei asenneta ilman käyttäjän erillistä hyväksyntää.
+
+## Päätösloki
+
+- 2026-11: Kirjautuminen Supabase-sähköpostikoodilla (OTP), ei taikalinkillä –
+  iOS:n kotinäyttösovellus ja Safari eivät jaa evästeitä.
+- 2026-11: Google-kalenteri ensin "salaisena iCal-osoitteena" (sama ICS-lukija
+  kuin Wilma ja myClub); OAuth vasta, jos tarvitaan kirjoitusta.
+- 2026-11: Kalenterisyötteet päivitetään tarvittaessa (TTL ~15 min), ei
+  ajastettuna – Vercel Hobbyn cron on rajoitettu.
+- 2026-11: Kauppalista vaiheessa 1 localStoragessa; vaiheessa 2 Supabase +
+  Realtime samaan `ShoppingListRepository`-rajapintaan.
+- 2026-11: Kotipaikkakunta vaiheessa 1 evästeessä; vaiheessa 2 families-tauluun.
+- 2026-11: Kehityspalvelimen ESLint/shadcn-CLI:n epäsuorat `minimatch`- ja
+  `deepmerge`-löydökset hyväksytty (vain kehitystyökaluissa, ei tuotannossa;
+  `npm audit --omit=dev` = 0). Tarkistetaan uudelleen päivitysten yhteydessä.
+- 2026-11: Tumma tila siirretty vaiheeseen 4; tokenit valmiina.
