@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 
 import { AppShell } from "@/components/layout/app-shell"
+import { ServiceWorkerRegistration } from "@/components/layout/service-worker-registration"
 import "./globals.css"
 
 // next/font lataa fontin build-vaiheessa ja tarjoilee sen omalta palvelimelta:
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="fi" className={`${inter.variable} antialiased`}>
       <body>
         <AppShell>{children}</AppShell>
+        <ServiceWorkerRegistration />
       </body>
     </html>
   )
