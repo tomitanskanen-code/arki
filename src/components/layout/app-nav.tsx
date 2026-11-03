@@ -13,7 +13,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Päävalikko"
-      className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur-sm md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 pb-safe backdrop-blur-sm md:hidden"
     >
       <ul className="mx-auto grid h-(--nav-height) max-w-xl grid-cols-4">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
@@ -50,7 +50,7 @@ export function SideNav() {
   return (
     <nav
       aria-label="Päävalikko"
-      className="pt-safe sticky top-0 hidden h-dvh w-56 shrink-0 flex-col border-r px-4 md:flex"
+      className="sticky top-0 hidden h-dvh w-56 shrink-0 flex-col border-r px-4 pt-safe md:flex"
     >
       <p className="px-3 pt-8 pb-8 text-lg font-semibold tracking-tight">
         Arki
