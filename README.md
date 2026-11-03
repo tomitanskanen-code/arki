@@ -4,7 +4,7 @@ Perheen yksityinen, mobiililähtöinen arjenhallintasovellus (PWA). Kokoaa yhtee
 päivän menot, lasten koulupäivät ja harrastukset, sään, kouluruokalistan ja
 yhteisen kauppalistan.
 
-> **Tila: vaihe 2.** Kirjautuminen sähköpostikoodilla, perhe ja reaaliaikainen
+> **Tila: vaihe 2.** Kirjautuminen sähköpostilla ja salasanalla, perhe ja reaaliaikainen
 > kauppalista Supabasessa, sää Open-Meteosta. Kalenterit ja ruokalista ovat
 > vielä esimerkkidataa. Ilman Supabase-asetuksia sovellus käynnistyy
 > esittelytilaan. Käyttöönotto: [docs/KAYTTOONOTTO.md](docs/KAYTTOONOTTO.md).

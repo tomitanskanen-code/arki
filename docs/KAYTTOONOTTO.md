@@ -33,73 +33,58 @@ kirjautumista), joten kehitystä voi jatkaa missä vaiheessa tahansa.
 
 ## 3. Kirjautumisen asetukset
 
+Arki käyttää kirjautumiseen sähköpostia ja salasanaa. Rekisteröitymistä ei
+ole, eikä sovellus lähetä sähköposteja, joten erillistä SMTP-palvelua tai
+sähköpostipohjia ei tarvita.
+
 1. **Authentication → Sign In / Providers**
-   - **Allow new users to sign up: pois päältä** (vain kutsutut käyttäjät).
-   - Email-provider päällä. Email OTP length: 6.
-2. **Authentication → Emails → Templates**: vaihda **sekä "Confirm signup"
-   että "Magic Link"** -pohja näyttämään koodi. Supabase käyttää
-   ensimmäisellä kirjautumisella "Confirm signup" -pohjaa, jos kutsuttua
-   tunnusta ei ole vielä vahvistettu, ja sen jälkeen "Magic Link" -pohjaa.
-   Molempiin sama sisältö, esim.:
-
-   ```html
-   <h2>Arki – kirjautumiskoodi</h2>
-   <p>Kirjautumiskoodisi on:</p>
-   <p style="font-size:28px;letter-spacing:4px">
-     <strong>{{ .Token }}</strong>
-   </p>
-   <p>
-     Koodi on voimassa rajoitetun ajan. Jos et yrittänyt kirjautua, voit ohittaa
-     viestin.
-   </p>
-   ```
-
-   Aihe esim. `Arki – kirjautumiskoodi`. Halutessasi voit lisätä koodin
-   alle myös varalinkin `<a href="{{ .ConfirmationURL }}">Kirjaudu
-linkillä</a>` – se toimii vain samassa selaimessa, jossa koodia pyydettiin.
-
-3. **Authentication → URL Configuration → Redirect URLs**: lisää
-   `http://localhost:3000/**` (ja vaiheessa 6 Vercel-osoite muodossa
-   `https://arki-….vercel.app/**`). Muuten sähköpostilinkki ohjautuu väärään
-   paikkaan.
-
-4. **Sähköpostin lähetys.** Supabasen oma sähköpostipalvelu on tarkoitettu
-   vain kokeiluun: se lähettää viestejä ainoastaan Supabase-organisaatiosi
-   tiimin jäsenille ja vain muutaman tunnissa. Oma osoitteesi toimii siis
-   heti. **Toista vanhempaa varten** tarvitaan oma SMTP-palvelu
-   (Authentication → Emails → SMTP Settings). Valitaan ja otetaan käyttöön
-   erikseen ennen kuin puoliso alkaa käyttää sovellusta.
+   - **Allow new users to sign up: pois päältä.** Tunnuksia voi luoda vain
+     ylläpitäjä hallintapaneelista.
+   - Email-provider päällä.
+   - Salasanan vähimmäispituudeksi vähintään 12 merkkiä, jos asetus on
+     tarjolla.
 
 ## 4. Käyttäjät ja perhe
 
-1. **Authentication → Users → Add user → Send invitation**: kutsu oma
-   osoitteesi (ja myöhemmin puolisosi). Kutsulinkkiä ei tarvitse avata:
-   kirjautuminen tehdään sovelluksessa koodilla.
+1. **Authentication → Users → Add user → Create new user** kummallekin
+   vanhemmalle:
+   - Email: vanhemman sähköposti
+   - Password: vahva salasana (esim. salasanojen hallinnan luoma). Tallenna
+     se salasanojen hallintaan ja välitä puolisolle turvallisesti – ei
+     tähän keskusteluun eikä repoon.
+   - **Auto Confirm User: päällä** (muuten tunnus jää vahvistamattomaksi).
+   - Jos olet aiemmin kutsunut itsesi "Send invitation" -toiminnolla, poista
+     se vahvistamaton tunnus ensin ja luo tilalle uusi yllä olevalla tavalla.
 2. **SQL Editor**: kopioi `supabase/seed-family.example.sql`, korvaa
    `<...>`-kohdat (perheen nimi, jäsenten nimet, vanhempien sähköpostit) ja
    aja. Täytettyä versiota **ei tallenneta repoon**.
-   - Jos toista vanhempaa ei ole vielä kutsuttu, hänen `user_id`:nsä jää
-     tyhjäksi. Liitä myöhemmin:
+   - Jos perhe on jo luotu aiemmin mutta tunnus luotiin uudelleen, liitä
+     uusi tunnus perheenjäseneen:
      ```sql
      update public.family_members
      set user_id = (select id from auth.users where email = '<osoite>')
      where display_name = '<nimi>';
      ```
+   - Salasanan voi vaihtaa myöhemmin: Authentication → Users → käyttäjä →
+     "Send password recovery" vaatii sähköpostin, joten helpompaa on poistaa
+     ja luoda tunnus uudelleen ja ajaa yllä oleva liitoskysely.
 
 ## 5. Paikallinen testaus
 
 1. Supabase → **Project Settings → API Keys**: kopioi
-   - Project URL
+   - Project URL (Project Settings → Data API), muotoa
+     `https://<tunnus>.supabase.co`
    - **Publishable key** (`sb_publishable_…`)
 2. Projektikansiossa: kopioi `.env.example` → `.env.local` ja täytä
    ```
-   NEXT_PUBLIC_SUPABASE_URL=…
-   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=…
+   NEXT_PUBLIC_SUPABASE_URL=https://abcdefghijklmnopqrst.supabase.co
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
    ```
-   Publishable key on tarkoitettu selaimeen; suojaus perustuu RLS:ään.
-   **Secret keytä ei tarvita** eikä sitä laiteta mihinkään.
+   Ilman lainausmerkkejä ja kulmasulkeita. Publishable key on tarkoitettu
+   selaimeen; suojaus perustuu RLS:ään. **Secret keytä ei tarvita** eikä
+   sitä laiteta mihinkään.
 3. Käynnistä `npm run dev` uudelleen → <http://localhost:3000> ohjaa
-   kirjautumiseen → sähköposti → koodi.
+   kirjautumiseen → sähköposti ja salasana.
 4. Kokeile kauppalistaa kahdessa selainikkunassa: muutos näkyy toisessa
    ilman päivitystä.
 
@@ -112,18 +97,15 @@ linkillä</a>` – se toimii vain samassa selaimessa, jossa koodia pyydettiin.
 3. Ennen julkaisua: **Environment Variables** – lisää samat kaksi
    muuttujaa kuin `.env.local`-tiedostossa (Production ja Preview).
 4. **Deploy**. Saat osoitteen muotoa `https://arki-….vercel.app`.
-5. Supabase → **Authentication → URL Configuration**: aseta **Site URL**
-   Vercel-osoitteeksi ja lisää **Redirect URLs** -listaan
-   `https://arki-….vercel.app/**`.
-6. Jokainen push `main`-haaraan julkaisee uuden version automaattisesti.
+5. Jokainen push `main`-haaraan julkaisee uuden version automaattisesti.
 
 ## 7. iPhonen kotinäytölle
 
 1. Avaa Vercel-osoite **Safarissa** ja kirjaudu.
 2. Jaa-painike → **Lisää Koti-valikkoon** → Lisää.
 3. Käynnistä Arki kotinäytön kuvakkeesta. Kotinäytön sovellus ja Safari
-   eivät jaa kirjautumista, joten kirjaudu sovelluksessa vielä kerran
-   koodilla.
+   eivät jaa kirjautumista, joten kirjaudu sovelluksessa vielä kerran.
+   iPhone tarjoaa tallentamaan salasanan avainnippuun.
 
 ## Varmuuskopiot
 

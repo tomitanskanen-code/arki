@@ -1,98 +1,50 @@
 "use server"
 
-import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 import { createSupabaseServerClient } from "@/lib/supabase/server"
 
 export interface LoginState {
-  step: "email" | "code"
   email?: string
   error?: string
 }
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const CODE_PATTERN = /^\d{6,10}$/
-
-/** Sovelluksen oma linkinkäsittelyosoite pyynnön Origin-otsakkeesta. */
-async function confirmUrl() {
-  const origin = (await headers()).get("origin")
-  if (!origin || !/^https?:\/\/[^/]+$/.test(origin)) return undefined
-  return `${origin}/auth/confirm`
-}
 
 /**
- * Kaksivaiheinen kirjautuminen sähköpostikoodilla (OTP).
- * Koodi toimii myös iPhonen kotinäyttösovelluksessa, toisin kuin
- * sähköpostin kirjautumislinkki, joka avautuisi Safariin.
+ * Kirjautuminen sähköpostilla ja salasanalla.
+ *
+ * Tunnukset luodaan ylläpitäjänä Supabasen hallintapaneelissa; sovelluksessa
+ * ei ole rekisteröitymistä. Sähköposteja ei lähetetä, joten kirjautuminen
+ * toimii samoin selaimessa ja iPhonen kotinäyttösovelluksessa.
  */
 export async function loginAction(
-  previous: LoginState,
+  _previous: LoginState,
   formData: FormData,
 ): Promise<LoginState> {
-  const intent = formData.get("intent")
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase()
+  const password = String(formData.get("password") ?? "")
 
-  if (intent === "back") return { step: "email" }
-
-  if (intent === "send") {
-    const email = String(formData.get("email") ?? "")
-      .trim()
-      .toLowerCase()
-    if (!EMAIL_PATTERN.test(email) || email.length > 254) {
-      return { step: "email", error: "Tarkista sähköpostiosoite." }
-    }
-    const supabase = await createSupabaseServerClient()
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        // Uusia tunnuksia ei luoda: vain kutsutut käyttäjät voivat kirjautua.
-        shouldCreateUser: false,
-        // Jos Supabase lähettää linkin koodin sijaan, se palaa tänne.
-        // Osoitteen pitää olla Supabasen Redirect URLs -listalla.
-        emailRedirectTo: await confirmUrl(),
-      },
-    })
-    if (error?.status === 429) {
-      return {
-        step: "email",
-        error: "Liian monta yritystä. Odota hetki ja yritä uudelleen.",
-      }
-    }
-    if (error) {
-      // Ei kerrota, onko osoitteella tunnusta. Virhe kirjataan palvelimelle.
-      console.warn("Kirjautumiskoodin lähetys epäonnistui:", error.message)
-    }
-    return { step: "code", email }
+  if (!EMAIL_PATTERN.test(email) || email.length > 254 || !password) {
+    return { email, error: "Anna sähköposti ja salasana." }
   }
 
-  if (intent === "verify") {
-    const email = previous.email ?? ""
-    const token = String(formData.get("code") ?? "").replace(/\s/g, "")
-    if (!email) return { step: "email" }
-    if (!CODE_PATTERN.test(token)) {
-      return {
-        step: "code",
-        email,
-        error: "Syötä sähköpostissa saamasi koodi.",
-      }
-    }
-    const supabase = await createSupabaseServerClient()
-    const { error } = await supabase.auth.verifyOtp({
-      email,
-      token,
-      type: "email",
-    })
-    if (error) {
-      return {
-        step: "code",
-        email,
-        error: "Koodi on virheellinen tai vanhentunut.",
-      }
-    }
-    redirect("/")
-  }
+  const supabase = await createSupabaseServerClient()
+  const { error } = await supabase.auth.signInWithPassword({ email, password })
 
-  return { step: "email" }
+  if (error?.status === 429) {
+    return {
+      email,
+      error: "Liian monta yritystä. Odota hetki ja yritä uudelleen.",
+    }
+  }
+  if (error) {
+    // Ei kerrota, kumpi tieto oli väärin.
+    return { email, error: "Sähköposti tai salasana on väärin." }
+  }
+  redirect("/")
 }
 
 export async function signOutAction() {

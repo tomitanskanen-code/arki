@@ -78,8 +78,12 @@ ohjelmia ei asenneta ilman käyttäjän erillistä hyväksyntää.
 
 ## Päätösloki
 
-- 2026-11: Kirjautuminen Supabase-sähköpostikoodilla (OTP), ei taikalinkillä –
-  iOS:n kotinäyttösovellus ja Safari eivät jaa evästeitä.
+- 2026-11 (päivitetty vaiheessa 2): Kirjautuminen sähköpostilla ja
+  salasanalla. Tunnukset luodaan ylläpitäjänä Supabasessa (Auto Confirm),
+  ei rekisteröitymistä eikä sähköpostien lähetystä. Alkuperäinen
+  sähköpostikoodi (OTP) hylättiin: Supabasen ilmaistason pohjat ovat
+  lukittuja ilman omaa SMTP:tä, ja linkit eivät toimi iOS:n
+  kotinäyttösovelluksessa (Safari ei jaa evästeitä).
 - 2026-11: Google-kalenteri ensin "salaisena iCal-osoitteena" (sama ICS-lukija
   kuin Wilma ja myClub); OAuth vasta, jos tarvitaan kirjoitusta.
 - 2026-11: Kalenterisyötteet päivitetään tarvittaessa (TTL ~15 min), ei
@@ -105,9 +109,3 @@ ohjelmia ei asenneta ilman käyttäjän erillistä hyväksyntää.
 - 2026-11 (vaihe 2): Kauppalistan Realtime: muutosilmoitus → lista luetaan
   uudelleen (yksinkertainen ja luotettava). Lisäksi luku, kun sovellus palaa
   taustalta (iOS katkaisee websocketin).
-- 2026-11 (vaihe 2): Vahvistamattomalle kutsutulle tunnukselle Supabase
-  lähettää "Confirm signup" -viestin. Molemmat pohjat näyttävät koodin
-  (`{{ .Token }}`), ja `/auth/confirm` käsittelee linkin varamenetelmänä
-  (PKCE-koodi tai token_hash). `verifyOtp` tyypillä `email` kattaa molemmat.
-- 2026-11 (vaihe 2): Supabasen oletus-SMTP lähettää vain tiimin jäsenille –
-  toisen vanhemman käyttöönotto vaatii oman SMTP-palvelun.
