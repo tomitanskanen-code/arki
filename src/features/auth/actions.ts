@@ -1,5 +1,6 @@
 "use server"
 
+import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
 import { createSupabaseServerClient } from "@/lib/supabase/server"
@@ -12,6 +13,13 @@ export interface LoginState {
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const CODE_PATTERN = /^\d{6,10}$/
+
+/** Sovelluksen oma linkinkäsittelyosoite pyynnön Origin-otsakkeesta. */
+async function confirmUrl() {
+  const origin = (await headers()).get("origin")
+  if (!origin || !/^https?:\/\/[^/]+$/.test(origin)) return undefined
+  return `${origin}/auth/confirm`
+}
 
 /**
  * Kaksivaiheinen kirjautuminen sähköpostikoodilla (OTP).
@@ -36,8 +44,13 @@ export async function loginAction(
     const supabase = await createSupabaseServerClient()
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      // Uusia tunnuksia ei luoda: vain kutsutut käyttäjät voivat kirjautua.
-      options: { shouldCreateUser: false },
+      options: {
+        // Uusia tunnuksia ei luoda: vain kutsutut käyttäjät voivat kirjautua.
+        shouldCreateUser: false,
+        // Jos Supabase lähettää linkin koodin sijaan, se palaa tänne.
+        // Osoitteen pitää olla Supabasen Redirect URLs -listalla.
+        emailRedirectTo: await confirmUrl(),
+      },
     })
     if (error?.status === 429) {
       return {

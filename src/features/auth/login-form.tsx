@@ -9,10 +9,10 @@ const inputClass =
 const buttonClass =
   "h-12 w-full rounded-xl bg-primary text-[15px] font-medium text-primary-foreground transition-opacity disabled:opacity-50"
 
-export function LoginForm() {
+export function LoginForm({ initialError }: { initialError?: string }) {
   const [state, formAction, pending] = useActionState<LoginState, FormData>(
     loginAction,
-    { step: "email" },
+    { step: "email", error: initialError },
   )
 
   return (

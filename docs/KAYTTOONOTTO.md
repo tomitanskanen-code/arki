@@ -36,8 +36,11 @@ kirjautumista), joten kehitystä voi jatkaa missä vaiheessa tahansa.
 1. **Authentication → Sign In / Providers**
    - **Allow new users to sign up: pois päältä** (vain kutsutut käyttäjät).
    - Email-provider päällä. Email OTP length: 6.
-2. **Authentication → Emails → Templates → Magic Link**: vaihda sisältö
-   näyttämään koodi linkin sijaan, esim.:
+2. **Authentication → Emails → Templates**: vaihda **sekä "Confirm signup"
+   että "Magic Link"** -pohja näyttämään koodi. Supabase käyttää
+   ensimmäisellä kirjautumisella "Confirm signup" -pohjaa, jos kutsuttua
+   tunnusta ei ole vielä vahvistettu, ja sen jälkeen "Magic Link" -pohjaa.
+   Molempiin sama sisältö, esim.:
 
    ```html
    <h2>Arki – kirjautumiskoodi</h2>
@@ -51,9 +54,16 @@ kirjautumista), joten kehitystä voi jatkaa missä vaiheessa tahansa.
    </p>
    ```
 
-   Aihe esim. `Arki – kirjautumiskoodi`.
+   Aihe esim. `Arki – kirjautumiskoodi`. Halutessasi voit lisätä koodin
+   alle myös varalinkin `<a href="{{ .ConfirmationURL }}">Kirjaudu
+linkillä</a>` – se toimii vain samassa selaimessa, jossa koodia pyydettiin.
 
-3. **Sähköpostin lähetys.** Supabasen oma sähköpostipalvelu on tarkoitettu
+3. **Authentication → URL Configuration → Redirect URLs**: lisää
+   `http://localhost:3000/**` (ja vaiheessa 6 Vercel-osoite muodossa
+   `https://arki-….vercel.app/**`). Muuten sähköpostilinkki ohjautuu väärään
+   paikkaan.
+
+4. **Sähköpostin lähetys.** Supabasen oma sähköpostipalvelu on tarkoitettu
    vain kokeiluun: se lähettää viestejä ainoastaan Supabase-organisaatiosi
    tiimin jäsenille ja vain muutaman tunnissa. Oma osoitteesi toimii siis
    heti. **Toista vanhempaa varten** tarvitaan oma SMTP-palvelu
@@ -102,8 +112,9 @@ kirjautumista), joten kehitystä voi jatkaa missä vaiheessa tahansa.
 3. Ennen julkaisua: **Environment Variables** – lisää samat kaksi
    muuttujaa kuin `.env.local`-tiedostossa (Production ja Preview).
 4. **Deploy**. Saat osoitteen muotoa `https://arki-….vercel.app`.
-5. Supabase → **Authentication → URL Configuration → Site URL**: aseta
-   Vercel-osoite.
+5. Supabase → **Authentication → URL Configuration**: aseta **Site URL**
+   Vercel-osoitteeksi ja lisää **Redirect URLs** -listaan
+   `https://arki-….vercel.app/**`.
 6. Jokainen push `main`-haaraan julkaisee uuden version automaattisesti.
 
 ## 7. iPhonen kotinäytölle

@@ -105,5 +105,9 @@ ohjelmia ei asenneta ilman käyttäjän erillistä hyväksyntää.
 - 2026-11 (vaihe 2): Kauppalistan Realtime: muutosilmoitus → lista luetaan
   uudelleen (yksinkertainen ja luotettava). Lisäksi luku, kun sovellus palaa
   taustalta (iOS katkaisee websocketin).
+- 2026-11 (vaihe 2): Vahvistamattomalle kutsutulle tunnukselle Supabase
+  lähettää "Confirm signup" -viestin. Molemmat pohjat näyttävät koodin
+  (`{{ .Token }}`), ja `/auth/confirm` käsittelee linkin varamenetelmänä
+  (PKCE-koodi tai token_hash). `verifyOtp` tyypillä `email` kattaa molemmat.
 - 2026-11 (vaihe 2): Supabasen oletus-SMTP lähettää vain tiimin jäsenille –
   toisen vanhemman käyttöönotto vaatii oman SMTP-palvelun.

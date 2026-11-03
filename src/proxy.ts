@@ -16,6 +16,7 @@ import {
  * käyttömukavuutta, ei ainoa suoja.
  */
 const LOGIN_PATH = "/kirjaudu"
+const CONFIRM_PATH = "/auth/confirm"
 
 export async function proxy(request: NextRequest) {
   if (!isSupabaseConfigured) return NextResponse.next()
@@ -46,8 +47,11 @@ export async function proxy(request: NextRequest) {
   // getClaims tarkistaa tunnisteen allekirjoituksen (älä käytä getSession).
   const { data } = await supabase.auth.getClaims()
   const signedIn = Boolean(data?.claims)
-  const onLoginPage = request.nextUrl.pathname === LOGIN_PATH
+  const path = request.nextUrl.pathname
+  const onLoginPage = path === LOGIN_PATH
 
+  // Sähköpostilinkin käsittely luo istunnon itse.
+  if (path === CONFIRM_PATH) return response
   if (!signedIn && !onLoginPage) return redirect(request, response, LOGIN_PATH)
   if (signedIn && onLoginPage) return redirect(request, response, "/")
   return response
