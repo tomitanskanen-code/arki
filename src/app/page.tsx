@@ -12,13 +12,13 @@ import {
 } from "@/data/server"
 import { NoFamilyNotice } from "@/features/family/no-family-notice"
 import { TodaySkeleton, TodayView } from "@/features/today/today-view"
-import { localDayRange, todayLocal } from "@/lib/dates"
+import { isLocalDate, localDayRange, todayLocal } from "@/lib/dates"
 
-export default function TodayPage() {
+export default function TodayPage({ searchParams }: PageProps<"/">) {
   return (
     <PageContainer>
       <Suspense fallback={<TodaySkeleton />}>
-        <TodayContent />
+        <TodayContent searchParams={searchParams} />
       </Suspense>
     </PageContainer>
   )
@@ -34,29 +34,36 @@ async function optional<T>(promise: Promise<T>, label: string) {
   }
 }
 
-async function TodayContent() {
+async function TodayContent({
+  searchParams,
+}: Pick<PageProps<"/">, "searchParams">) {
   // "Tänään" riippuu pyynnön ajankohdasta, joten sivu renderöidään pyynnön
   // aikana eikä build-vaiheessa (Cache Components).
   await connection()
   const today = todayLocal()
+  // Selattu päivä osoitteesta (?paiva=YYYY-MM-DD); virheellinen → tänään.
+  const { paiva } = await searchParams
+  const date = isLocalDate(paiva) ? paiva : today
 
   const [family, members, sources, events, menu] = await Promise.all([
     familyRepository.getFamily(),
     familyRepository.getMembers(),
     calendarRepository.getSources(),
-    calendarRepository.getEvents(localDayRange(today)),
+    calendarRepository.getEvents(localDayRange(date)),
     schoolMenuProvider
-      ? optional(schoolMenuProvider.getMenu(today), "Ruokalistan haku")
+      ? optional(schoolMenuProvider.getMenu(date), "Ruokalistan haku")
       : undefined,
   ])
   if (!family) return <NoFamilyNotice email={await getSignedInEmail()} />
-  const weather = await optional(
-    weatherProvider.getToday(family.home),
-    "Säähaku",
-  )
+  // Sää on nykyhetken sää, joten se haetaan vain tälle päivälle.
+  const weather =
+    date === today
+      ? await optional(weatherProvider.getToday(family.home), "Säähaku")
+      : null
 
   return (
     <TodayView
+      date={date}
       today={today}
       members={members}
       sources={sources}

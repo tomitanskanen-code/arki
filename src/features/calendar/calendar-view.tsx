@@ -1,10 +1,10 @@
 "use client"
 
-import { ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useRef, useState } from "react"
 
+import { StepNav } from "@/components/layout/step-nav"
 import { buildDayAgenda, filterByMembers } from "@/domain/calendar"
 import type {
   CalendarEvent,
@@ -139,32 +139,13 @@ export function CalendarView({
           ))}
         </nav>
 
-        <div className="flex items-center">
-          {!isCurrent && (
-            <Link
-              href={calendarHref(today, view)}
-              className="mr-1 flex min-h-11 items-center px-3 text-sm font-medium"
-            >
-              Tänään
-            </Link>
-          )}
-          <Link
-            href={prevHref}
-            aria-label={
-              view === "week" ? "Edellinen viikko" : "Edellinen päivä"
-            }
-            className="flex size-11 items-center justify-center rounded-full hover:bg-accent"
-          >
-            <ChevronLeft aria-hidden className="size-5" />
-          </Link>
-          <Link
-            href={nextHref}
-            aria-label={view === "week" ? "Seuraava viikko" : "Seuraava päivä"}
-            className="flex size-11 items-center justify-center rounded-full hover:bg-accent"
-          >
-            <ChevronRight aria-hidden className="size-5" />
-          </Link>
-        </div>
+        <StepNav
+          prevHref={prevHref}
+          nextHref={nextHref}
+          todayHref={isCurrent ? null : calendarHref(today, view)}
+          prevLabel={view === "week" ? "Edellinen viikko" : "Edellinen päivä"}
+          nextLabel={view === "week" ? "Seuraava viikko" : "Seuraava päivä"}
+        />
       </div>
 
       <div

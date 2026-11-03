@@ -46,6 +46,11 @@ Käyttöliittymä ei koskaan tuo `data/mock`-moduuleja suoraan, vaan aina
 - **Tyyli:** pohjoismainen, rauhallinen. Osiot ja ohuet viivat korttien sijaan.
   Värit vain tokeneista (`globals.css`), jäsenvärit `bg-member-*`.
   Kosketusalueet ≥ 44 px. Safe area: `pt-safe`, `pb-safe`.
+- **Ulkoasun tarkistus ilman kirjautumista:** `NEXT_PUBLIC_ARKI_DEMO=1`
+  pakottaa esittelytilan (PowerShell: `$env:NEXT_PUBLIC_ARKI_DEMO='1'; npm run dev`).
+- **Päivien selaus:** kalenteri ja etusivu käyttävät `?paiva=YYYY-MM-DD`
+  -parametria ja yhteistä `StepNav`-komponenttia. Etusivulla sää näytetään
+  vain kuluvalle päivälle.
 - **Yksinkertaisuus:** toimiva ja ylläpidettävä ratkaisu ennen hienostelua.
   Ei tarpeettomia ominaisuuksia (esim. kauppalistaan ei tuoterekisteriä).
 

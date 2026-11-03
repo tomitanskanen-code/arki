@@ -1,6 +1,8 @@
 import { ArrowUpRight } from "lucide-react"
+import Link from "next/link"
 
 import { Section } from "@/components/layout/page"
+import { StepNav } from "@/components/layout/step-nav"
 import { buildDayAgenda } from "@/domain/calendar"
 import type {
   CalendarEvent,
@@ -14,6 +16,7 @@ import { Agenda } from "@/features/calendar/agenda"
 import { MemberDot } from "@/features/family/member-dot"
 import { WeatherIcon } from "@/features/weather/weather-icon"
 import {
+  addLocalDays,
   capitalize,
   formatDayMonth,
   formatWeekday,
@@ -24,6 +27,9 @@ import {
 import { ShoppingPreview } from "./shopping-preview"
 
 export interface TodayData {
+  /** Näytettävä päivä (selattavissa nuolilla) */
+  date: LocalDate
+  /** Kuluva päivä Helsingin aikaa */
   today: LocalDate
   members: FamilyMember[]
   sources: CalendarSource[]
@@ -43,7 +49,13 @@ function isChildrenOnly(event: CalendarEvent, childIds: Set<string>) {
   )
 }
 
+/** Etusivun osoite päivälle; tänään = pelkkä "/". */
+function dayHref(date: LocalDate, today: LocalDate) {
+  return date === today ? "/" : `/?paiva=${date}`
+}
+
 export function TodayView({
+  date,
   today,
   members,
   sources,
@@ -62,55 +74,79 @@ export function TodayView({
       !isChildrenOnly(e, childIds),
   )
 
+  const isToday = date === today
+
   return (
     <>
-      <header className="flex items-start justify-between gap-4 pt-10 pb-6 md:pt-14">
-        <div>
+      <header className="pt-10 pb-6 md:pt-14">
+        <div className="flex min-h-6 items-center justify-between gap-2">
           <p className="text-sm text-muted-foreground">
-            {formatDayMonth(today)} · viikko {isoWeekNumber(today)}
+            {isToday && "Tänään · "}
+            {formatDayMonth(date)} · viikko {isoWeekNumber(date)}
           </p>
-          <h1 className="mt-1 text-[2.5rem] leading-none font-light tracking-tight">
-            {capitalize(formatWeekday(today))}
-          </h1>
+          {/* Paluu tähän päivään täällä, jotta otsikon viereen mahtuvat
+              nuolet pisimmälläkin päivän nimellä (Keskiviikko). */}
+          {!isToday && (
+            <Link
+              href="/"
+              className="-my-2.5 flex min-h-11 items-center px-1 text-sm font-medium"
+            >
+              Tänään
+            </Link>
+          )}
         </div>
-        {weather && (
-          <div className="flex items-center gap-2 pt-4">
-            <WeatherIcon
-              condition={weather.condition}
-              isDay={weather.isDay}
-              className="size-7 text-foreground/70"
-            />
-            <span className="text-3xl font-light tabular-nums">
-              {formatTemperature(weather.temperature)}
-            </span>
-          </div>
-        )}
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <h1 className="text-[2.5rem] leading-none font-light tracking-tight">
+            {capitalize(formatWeekday(date))}
+          </h1>
+          <StepNav
+            prevHref={dayHref(addLocalDays(date, -1), today)}
+            nextHref={dayHref(addLocalDays(date, 1), today)}
+            todayHref={null}
+            prevLabel="Edellinen päivä"
+            nextLabel="Seuraava päivä"
+          />
+        </div>
       </header>
 
-      <p className="-mt-2 mb-6 text-[15px] text-muted-foreground">
-        {weather ? (
-          <>
-            {CONDITION_LABELS[weather.condition]} ·{" "}
-            {formatTemperature(weather.todayMax)} /{" "}
-            {formatTemperature(weather.todayMin)}
-            {weather.precipitationProbability !== null &&
-              ` · sade ${weather.precipitationProbability} %`}{" "}
-            · {weather.placeName}
-          </>
-        ) : (
-          "Säätietoja ei juuri nyt saatu."
-        )}
-      </p>
+      {isToday && (
+        <p className="-mt-2 mb-6 flex items-center gap-2 text-[15px] text-muted-foreground">
+          {weather ? (
+            <>
+              <WeatherIcon
+                condition={weather.condition}
+                isDay={weather.isDay}
+                className="size-5 shrink-0 text-foreground/70"
+              />
+              <span>
+                <span className="font-medium text-foreground tabular-nums">
+                  {formatTemperature(weather.temperature)}
+                </span>{" "}
+                · {CONDITION_LABELS[weather.condition]} ·{" "}
+                {formatTemperature(weather.todayMax)} /{" "}
+                {formatTemperature(weather.todayMin)}
+                {weather.precipitationProbability !== null &&
+                  ` · sade ${weather.precipitationProbability} %`}{" "}
+                · {weather.placeName}
+              </span>
+            </>
+          ) : (
+            "Säätietoja ei juuri nyt saatu."
+          )}
+        </p>
+      )}
 
       <div className="md:grid md:grid-cols-2 md:gap-x-12">
         <div>
           <Section title="Menot">
             <Agenda
-              items={buildDayAgenda(familyEvents, today)}
-              date={today}
+              items={buildDayAgenda(familyEvents, date)}
+              date={date}
               members={members}
               sources={sources}
-              emptyText="Ei muita menoja tänään."
+              emptyText={
+                isToday ? "Ei muita menoja tänään." : "Ei muita menoja."
+              }
             />
           </Section>
 
@@ -122,7 +158,7 @@ export function TodayView({
                   own.filter(
                     (e) => e.category === "school" || e.category === "hobby",
                   ),
-                  today,
+                  date,
                 )
                 return (
                   <div key={child.id}>
@@ -132,7 +168,7 @@ export function TodayView({
                     </p>
                     <Agenda
                       items={items}
-                      date={today}
+                      date={date}
                       members={members}
                       sources={sources}
                       emptyText="Ei koulua eikä harrastuksia."
@@ -158,7 +194,9 @@ export function TodayView({
                   )}
                 </div>
               ) : (
-                <p className="text-muted-foreground">Ei kouluruokaa tänään.</p>
+                <p className="text-muted-foreground">
+                  {isToday ? "Ei kouluruokaa tänään." : "Ei kouluruokaa."}
+                </p>
               )}
             </Section>
           )}

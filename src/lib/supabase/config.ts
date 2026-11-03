@@ -9,6 +9,12 @@ export const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
 export const supabasePublishableKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? ""
 
-export const isSupabaseConfigured = Boolean(
-  supabaseUrl && supabasePublishableKey,
-)
+/**
+ * Kehittäjän kytkin: NEXT_PUBLIC_ARKI_DEMO=1 pakottaa esittelytilan, vaikka
+ * Supabase-avaimet olisivat .env.local-tiedostossa (ulkoasun tarkistus ilman
+ * kirjautumista). Ei käytetä tuotannossa.
+ */
+const forceDemo = process.env.NEXT_PUBLIC_ARKI_DEMO === "1"
+
+export const isSupabaseConfigured =
+  !forceDemo && Boolean(supabaseUrl && supabasePublishableKey)
