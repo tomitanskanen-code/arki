@@ -36,6 +36,7 @@ yarn-error.log*
 
 # Claude Code: henkilökohtaiset paikalliset asetukset
 .claude/settings.local.json
+.claude/launch.json
 
 # vercel
 .vercel

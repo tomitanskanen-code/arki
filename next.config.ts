@@ -1,8 +1,9 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
+  // Kehitystilan "N"-merkki pois mobiilin alanavigaation päältä.
+  devIndicators: { position: "top-right" },
   partialPrefetching: true,
   turbopack: {
     rules: {
