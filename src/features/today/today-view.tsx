@@ -24,6 +24,8 @@ import {
   type LocalDate,
 } from "@/lib/dates"
 
+import { TasksPreview } from "@/features/tasks/tasks-preview"
+
 import { ShoppingPreview } from "./shopping-preview"
 
 export interface TodayData {
@@ -182,6 +184,11 @@ export function TodayView({
         </div>
 
         <div>
+          {/* Tehtävät eivät ole päiväkohtaisia: aina tämän päivän tilanne. */}
+          <Section title="Tehtävät">
+            <TasksPreview members={members} today={today} />
+          </Section>
+
           {menu !== undefined && (
             <Section title="Ruokalista">
               {menu ? (
