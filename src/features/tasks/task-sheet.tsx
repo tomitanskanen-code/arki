@@ -117,7 +117,17 @@ function TaskSheetContent({
       initialFocus={task ? undefined : titleRef}
       className="mx-auto max-h-[90dvh] w-full max-w-xl gap-0 overflow-y-auto rounded-t-2xl border-x bg-surface pb-[calc(env(safe-area-inset-bottom)+1rem)]"
     >
-      <form onSubmit={save} className="px-5 pt-5">
+      <form
+        onSubmit={save}
+        // iOS: napautus sulkisi ensin näppäimistön, jolloin paneeli liukuu
+        // alas ja napautus osuu ohi painikkeesta. Estetään painikkeiden
+        // painalluksen kohdistusmuutos, jotta näppäimistö pysyy auki ja
+        // klikkaus osuu. Tekstikentät toimivat normaalisti.
+        onPointerDown={(e) => {
+          if ((e.target as HTMLElement).closest("button")) e.preventDefault()
+        }}
+        className="px-5 pt-5"
+      >
         <SheetTitle className="mb-3 text-sm font-medium text-muted-foreground">
           {task ? "Muokkaa tehtävää" : "Uusi tehtävä"}
         </SheetTitle>
