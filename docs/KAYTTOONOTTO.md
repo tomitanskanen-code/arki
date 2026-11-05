@@ -141,6 +141,16 @@ Syötteet päivittyvät automaattisesti, kun sovellus avataan ja edellisestä
 hausta on yli 15 minuuttia. Asetuksissa näkyy jokaisen syötteen tila; ↻
 päivittää heti.
 
+## 9. Tehtävät
+
+1. **Migraatio ennen julkaisua:** Supabase → SQL Editor → aja
+   `supabase/migrations/20261105120000_tehtavat.sql`. Tee tämä **ennen** kuin
+   tehtävät-muutokset julkaistaan tuotantoon, muuten etusivun Tehtävät-osio
+   näyttää virheen.
+2. Tarkista: Table Editor → `tasks`, "RLS enabled".
+3. Vastuuhenkilöiksi voi valita perheenjäsenet, joilla on kirjautumistunnus
+   (`family_members.user_id`). Muita asetuksia ei tarvita.
+
 ## Varmuuskopiot
 
 Supabasen ilmaistasossa ei ole ladattavia varmuuskopioita. Rakenne on

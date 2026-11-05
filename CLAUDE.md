@@ -159,3 +159,18 @@ ohjelmia ei asenneta ilman käyttäjän erillistä hyväksyntää.
 - 2026-11 (vaihe 2): Kauppalistan Realtime: muutosilmoitus → lista luetaan
   uudelleen (yksinkertainen ja luotettava). Lisäksi luku, kun sovellus palaa
   taustalta (iOS katkaisee websocketin).
+- 2026-11 (Tehtävät): taulu `tasks` (migraatio `20261105120000_tehtavat.sql`).
+  Vastuuhenkilö `assigned_to` = `auth.users.id` (perheenjäsen, jolla
+  `user_id`); null = koko perhe. RLS: oman perheen rivit, ja `assigned_to`
+  tarkistetaan `is_family_user()`-funktiolla. `completed_at/by` asettaa
+  triggeri tilan muuttuessa. Kategoriat tekstinä check-rajoitteella
+  (laajennus = rajoitteen muutos). Selaimessa kuten kauppalista
+  (`TaskRepository`, Realtime, `useTasks` + `useOptimistic`, kumoa 5 s).
+  Oletusjärjestys domainissa (`sortOpenTasks`): myöhässä → 7 pv sisällä →
+  tärkeät → muut.
+- 2026-11 (Tehtävät): Myöhemmät laajennukset uusina valinnaisina sarakkeina
+  tai tauluina: `recurrence`, `remind_at`, `parent_id`, `task_events`
+  (historia), `source_event_id` (kalenteritapahtumasta).
+- 2026-11 (Tehtävät): Mobiilin alapalkki Koti · Kalenteri · Tehtävät ·
+  Kauppalista. Asetukset etusivun rataskuvakkeesta (ja iPadin sivupalkista,
+  `SIDE_NAV_ITEMS`).

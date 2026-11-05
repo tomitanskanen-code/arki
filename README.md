@@ -1,8 +1,8 @@
 # Arki
 
 Perheen yksityinen, mobiililähtöinen arjenhallintasovellus (PWA). Kokoaa yhteen
-päivän menot, lasten koulupäivät ja harrastukset, sään, kouluruokalistan ja
-yhteisen kauppalistan.
+päivän menot, lasten koulupäivät ja harrastukset, sään, kouluruokalistan,
+perheen yhteiset tehtävät ja yhteisen kauppalistan.
 
 > **Tila: vaihe 4.** Kirjautuminen sähköpostilla ja salasanalla, perhe,
 > reaaliaikainen kauppalista ja kalenterit (Wilma, myClub, Google iCal,
@@ -55,7 +55,7 @@ Realtime) · Open-Meteo · Vercel.
 
 ```
 src/
-  app/            Reitit: / (Tänään), /kalenteri, /kauppalista, /asetukset,
+  app/            Reitit: / (Tänään), /kalenteri, /tehtavat, /kauppalista, /asetukset,
                   manifest, ikonit, virhesivut
   components/     Yleiset UI-osat (layout/, ui/ = shadcn)
   features/       Näkymäkohtaiset komponentit (today, calendar, shopping, …)
@@ -82,8 +82,13 @@ Siirto toiselle koneelle: [docs/SIIRTO.md](docs/SIIRTO.md).
    valmis, käytössä
 4. **Viimeistely: kouluruokalistan linkki, tumma tila, päivitys taustalta
    palatessa, tietoturva- ja saavutettavuuskatselmointi** – valmis
+5. **Tehtävät:** perheen yhteinen tehtävälista (vastuuhenkilö, määräpäivä,
+   tärkeys, kategoria), etusivun nosto, reaaliaikainen synkronointi
 
 ### Jatkokehitysideoita
+
+- Tehtäviin: toistuvat tehtävät, muistutukset, alitehtävät, historia ja
+  tehtävä kalenteritapahtumasta (tietomalli laajennettavissa, ks. CLAUDE.md).
 
 - Kouluruokalista suoraan sovellukseen, jos Porvoo ottaa Aromin RSS-syötteen
   käyttöön (rajapinta `SchoolMenuProvider` on valmiina).
