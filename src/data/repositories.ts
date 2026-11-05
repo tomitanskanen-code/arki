@@ -8,6 +8,9 @@ import type {
   ManualScheduleEntry,
   SchoolMenuDay,
   ShoppingListItem,
+  Task,
+  TaskInput,
+  TaskStatus,
   WeatherSnapshot,
 } from "@/domain/types"
 import type { InstantRange, LocalDate } from "@/lib/dates"
@@ -71,6 +74,17 @@ export interface WeatherProvider {
 export interface SchoolMenuProvider {
   /** Palauttaa null, jos päivälle ei ole ruokalistaa (viikonloppu, loma). */
   getMenu(date: LocalDate): Promise<SchoolMenuDay | null>
+}
+
+/** Tehtävät toimivat selaimessa kuten kauppalista (Realtime). */
+export interface TaskRepository {
+  list(): Promise<Task[]>
+  add(input: TaskInput): Promise<Task>
+  update(id: string, patch: Partial<TaskInput>): Promise<void>
+  setStatus(id: string, status: TaskStatus): Promise<void>
+  remove(id: string): Promise<void>
+  /** Kutsuu kuuntelijaa, kun tehtävät muuttuvat muualla. */
+  subscribe(listener: () => void): () => void
 }
 
 /** Kauppalista toimii selaimessa, jotta muutokset näkyvät heti. */

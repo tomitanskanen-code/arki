@@ -7,6 +7,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server"
 import { mockCalendarAdmin } from "./mock/calendar-admin"
 import { mockCalendarRepository, mockFamilyRepository } from "./mock/family"
 import { mockSchoolMenuProvider } from "./mock/school-menu"
+import { DEMO_TASK_USER } from "./mock/tasks"
 import type {
   CalendarAdminRepository,
   CalendarRepository,
@@ -67,4 +68,16 @@ export async function getSignedInEmail(): Promise<string | null> {
   const { data } = await supabase.auth.getClaims()
   const email = data?.claims?.email
   return typeof email === "string" ? email : null
+}
+
+/**
+ * Kirjautuneen käyttäjän tunnus (auth.users.id). Esittelytilassa
+ * esimerkkiperheen vanhempi, jotta "Minun tehtäväni" toimii.
+ */
+export async function getSignedInUserId(): Promise<string | null> {
+  if (!isSupabaseConfigured) return DEMO_TASK_USER
+  const supabase = await createSupabaseServerClient()
+  const { data } = await supabase.auth.getClaims()
+  const sub = data?.claims?.sub
+  return typeof sub === "string" ? sub : null
 }
