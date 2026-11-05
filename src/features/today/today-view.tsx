@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react"
+import { ArrowUpRight, Settings2 } from "lucide-react"
 import Link from "next/link"
 
 import { Section } from "@/components/layout/page"
@@ -88,14 +88,24 @@ export function TodayView({
           </p>
           {/* Paluu tähän päivään täällä, jotta otsikon viereen mahtuvat
               nuolet pisimmälläkin päivän nimellä (Keskiviikko). */}
-          {!isToday && (
+          <div className="-my-2.5 flex items-center">
+            {!isToday && (
+              <Link
+                href="/"
+                className="flex min-h-11 items-center px-1 text-sm font-medium"
+              >
+                Tänään
+              </Link>
+            )}
+            {/* Mobiilissa Asetukset on täällä; iPadilla sivupalkissa. */}
             <Link
-              href="/"
-              className="-my-2.5 flex min-h-11 items-center px-1 text-sm font-medium"
+              href="/asetukset"
+              aria-label="Asetukset"
+              className="-mr-2.5 flex size-11 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground md:hidden"
             >
-              Tänään
+              <Settings2 aria-hidden className="size-5" />
             </Link>
-          )}
+          </div>
         </div>
         <div className="mt-1 flex items-center justify-between gap-2">
           <h1 className="text-[2.5rem] leading-none font-light tracking-tight">

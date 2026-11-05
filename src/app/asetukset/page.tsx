@@ -1,6 +1,8 @@
 import { formatDistanceToNowStrict } from "date-fns"
 import { fi } from "date-fns/locale"
+import { ChevronLeft } from "lucide-react"
 import type { Metadata } from "next"
+import Link from "next/link"
 import { connection } from "next/server"
 import { Suspense } from "react"
 
@@ -50,7 +52,19 @@ function syncDescription(
 export default function SettingsPage() {
   return (
     <PageContainer className="md:max-w-2xl">
-      <PageHeader title="Asetukset" />
+      <PageHeader
+        title="Asetukset"
+        eyebrow={
+          // Mobiilissa Asetukset ei ole alapalkissa: paluu etusivulle.
+          <Link
+            href="/"
+            className="-ml-1 inline-flex min-h-11 items-center gap-1 px-1 font-medium text-foreground/80 hover:text-foreground md:hidden"
+          >
+            <ChevronLeft aria-hidden className="size-4" />
+            Koti
+          </Link>
+        }
+      />
       <Suspense fallback={<SettingsSkeleton />}>
         <SettingsContent />
       </Suspense>

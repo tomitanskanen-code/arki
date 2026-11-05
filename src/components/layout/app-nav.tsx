@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
-import { hidesNav, isActive, NAV_ITEMS } from "./nav-items"
+import { hidesNav, isActive, NAV_ITEMS, SIDE_NAV_ITEMS } from "./nav-items"
 
 /** Mobiilin alanavigaatio. Huomioi iPhonen kotipalkin (safe area). */
 export function BottomNav() {
@@ -58,7 +58,7 @@ export function SideNav() {
         Arki
       </p>
       <ul className="flex flex-col gap-1">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        {SIDE_NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = isActive(pathname, href)
           return (
             <li key={href}>
