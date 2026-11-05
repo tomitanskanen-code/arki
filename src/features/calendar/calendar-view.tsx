@@ -228,7 +228,8 @@ export function CalendarView({
   )
 }
 
-function FilterChip({
+/** Suodatinsiru (kalenterin jäsensuodatin, tehtävien suodattimet). */
+export function FilterChip({
   active,
   onClick,
   children,
