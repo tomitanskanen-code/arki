@@ -43,7 +43,8 @@ Käyttöliittymä ei koskaan tuo `data/mock`-moduuleja suoraan, vaan aina
 - **Cache Components on päällä:** pyynnön aikaan sidottu data (tänään, cookies,
   searchParams) haetaan `<Suspense>`-rajan sisällä; `await connection()` ennen
   `new Date()`-käyttöä palvelinkomponentissa.
-- **Tyyli:** pohjoismainen, rauhallinen. Osiot ja ohuet viivat korttien sijaan.
+- **Tyyli:** pohjoismainen, rauhallinen. Osiot ja ohuet viivat korttien sijaan;
+  etusivulla osiot sävytettyinä paneeleina (`Section tone`, `--tint-*`).
   Värit vain tokeneista (`globals.css`), jäsenvärit `bg-member-*`.
   Kosketusalueet ≥ 44 px. Safe area: `pt-safe`, `pb-safe`.
 - **Ulkoasun tarkistus ilman kirjautumista:** `NEXT_PUBLIC_ARKI_DEMO=1`
@@ -174,3 +175,7 @@ ohjelmia ei asenneta ilman käyttäjän erillistä hyväksyntää.
 - 2026-11 (Tehtävät): Mobiilin alapalkki Koti · Kalenteri · Tehtävät ·
   Kauppalista. Asetukset etusivun rataskuvakkeesta (ja iPadin sivupalkista,
   `SIDE_NAV_ITEMS`).
+- 2026-11: Etusivun osiot erottuivat huonosti iPhonella → pyöristetyt
+  paneelit, joiden hillitty taustasävy lasketaan jäsenväreistä
+  (`color-mix`, `--tint-*`): Menot slate, Lapset sage, Tehtävät ochre,
+  Ruokalista clay, Kauppalista neutraali. Muut sivut ennallaan (viivat).

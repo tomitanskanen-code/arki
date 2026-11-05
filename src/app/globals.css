@@ -43,6 +43,13 @@
   --member-slate: #5e7c99;
   --member-ochre: #c29a4a;
 
+  /* Etusivun osioiden hillityt taustasävyt jäsenväreistä. Lasketaan
+     pinnan väristä, joten tumma tila toimii ilman omia arvoja. */
+  --tint-slate: color-mix(in oklab, var(--member-slate) 10%, var(--surface));
+  --tint-sage: color-mix(in oklab, var(--member-sage) 11%, var(--surface));
+  --tint-ochre: color-mix(in oklab, var(--member-ochre) 13%, var(--surface));
+  --tint-clay: color-mix(in oklab, var(--member-clay) 10%, var(--surface));
+
   --radius: 0.75rem;
   --nav-height: 4rem;
 }
@@ -103,6 +110,11 @@
   --color-member-clay: var(--member-clay);
   --color-member-slate: var(--member-slate);
   --color-member-ochre: var(--member-ochre);
+
+  --color-tint-slate: var(--tint-slate);
+  --color-tint-sage: var(--tint-sage);
+  --color-tint-ochre: var(--tint-ochre);
+  --color-tint-clay: var(--tint-clay);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-heading: var(--font-sans);

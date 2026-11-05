@@ -78,18 +78,18 @@ export function TasksPreview({
         </ul>
       )}
 
-      <div className="mt-2 flex items-center justify-between gap-2">
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-x-2">
         <button
           type="button"
           onClick={() => openSheet(null)}
-          className="-ml-1 flex min-h-11 items-center gap-1.5 px-1 text-sm font-medium"
+          className="-ml-1 flex min-h-11 items-center gap-1.5 px-1 text-sm font-medium whitespace-nowrap"
         >
           <Plus aria-hidden className="size-4" />
           Lisää tehtävä
         </button>
         <Link
           href="/tehtavat"
-          className="flex min-h-11 items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-foreground"
+          className="flex min-h-11 items-center gap-1.5 text-sm font-medium whitespace-nowrap text-foreground/80 hover:text-foreground"
         >
           {openCount > PREVIEW_COUNT
             ? `Kaikki ${openCount} tehtävää`

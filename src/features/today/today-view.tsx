@@ -1,4 +1,12 @@
-import { ArrowUpRight, Settings2 } from "lucide-react"
+import {
+  ArrowUpRight,
+  Backpack,
+  CalendarDays,
+  ListTodo,
+  Settings2,
+  ShoppingCart,
+  Utensils,
+} from "lucide-react"
 import Link from "next/link"
 
 import { Section } from "@/components/layout/page"
@@ -148,9 +156,9 @@ export function TodayView({
         </p>
       )}
 
-      <div className="md:grid md:grid-cols-2 md:gap-x-12">
+      <div className="md:grid md:grid-cols-2 md:gap-x-4">
         <div>
-          <Section title="Menot">
+          <Section title="Menot" tone="slate" icon={CalendarDays}>
             <Agenda
               items={buildDayAgenda(familyEvents, date)}
               date={date}
@@ -162,7 +170,7 @@ export function TodayView({
             />
           </Section>
 
-          <Section title="Lapset">
+          <Section title="Lapset" tone="sage" icon={Backpack}>
             <div className="space-y-5">
               {children.map((child) => {
                 const own = events.filter((e) => e.memberIds.includes(child.id))
@@ -195,12 +203,12 @@ export function TodayView({
 
         <div>
           {/* Tehtävät eivät ole päiväkohtaisia: aina tämän päivän tilanne. */}
-          <Section title="Tehtävät">
+          <Section title="Tehtävät" tone="ochre" icon={ListTodo}>
             <TasksPreview members={members} today={today} />
           </Section>
 
           {menu !== undefined && (
-            <Section title="Ruokalista">
+            <Section title="Ruokalista" tone="clay" icon={Utensils}>
               {menu ? (
                 <div className="text-[15px]">
                   <p>{menu.mainDish}</p>
@@ -218,7 +226,7 @@ export function TodayView({
             </Section>
           )}
           {menu === undefined && menuLink && (
-            <Section title="Ruokalista">
+            <Section title="Ruokalista" tone="clay" icon={Utensils}>
               <a
                 href={menuLink}
                 target="_blank"
@@ -232,7 +240,7 @@ export function TodayView({
             </Section>
           )}
 
-          <Section title="Kauppalista">
+          <Section title="Kauppalista" tone="neutral" icon={ShoppingCart}>
             <ShoppingPreview />
           </Section>
         </div>
@@ -250,7 +258,10 @@ export function TodaySkeleton() {
       </div>
       <div className="mb-8 h-4 w-64 rounded bg-muted" />
       {[0, 1, 2].map((i) => (
-        <div key={i} className="space-y-3 border-t py-5">
+        <div
+          key={i}
+          className="mb-3 space-y-3 rounded-2xl bg-muted/60 px-4 py-4"
+        >
           <div className="h-3 w-20 rounded bg-muted" />
           <div className="h-5 w-full rounded bg-muted" />
           <div className="h-5 w-2/3 rounded bg-muted" />
