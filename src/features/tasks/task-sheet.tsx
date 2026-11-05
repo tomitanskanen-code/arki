@@ -88,6 +88,7 @@ function TaskSheetContent({
     Boolean(task?.description),
   )
   const [picker, setPicker] = useState<Picker>(null)
+  const [titleMissing, setTitleMissing] = useState(false)
 
   const people = assignableMembers(members)
   const assignee = people.find((m) => m.userId === assignedTo)
@@ -96,6 +97,13 @@ function TaskSheetContent({
 
   function save(e: React.FormEvent) {
     e.preventDefault()
+    // Painike on aina käytössä: tyhjällä nimellä ohjataan nimikenttään
+    // (pelkkä himmennetty painike ei kerro, mikä puuttuu).
+    if (!canSave) {
+      setTitleMissing(true)
+      titleRef.current?.focus()
+      return
+    }
     const saved = onSave({
       title,
       assignedTo,
@@ -138,17 +146,33 @@ function TaskSheetContent({
         <label htmlFor="task-title" className="sr-only">
           Tehtävä
         </label>
+        {/* Selvästi kirjoituskentän näköinen: iOS ei avaa näppäimistöä
+            automaattisesti, joten kentän pitää erottua napautettavaksi. */}
         <input
           id="task-title"
           ref={titleRef}
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => {
+            setTitle(e.target.value)
+            setTitleMissing(false)
+          }}
           maxLength={MAX_TASK_TITLE_LENGTH}
           placeholder="Mitä pitää tehdä?"
           autoComplete="off"
           enterKeyHint="done"
-          className="w-full bg-transparent py-1 pr-8 text-xl font-medium placeholder:font-normal placeholder:text-muted-foreground focus-visible:outline-none"
+          aria-invalid={titleMissing || undefined}
+          aria-describedby={titleMissing ? "task-title-hint" : undefined}
+          className="h-12 w-full rounded-xl border border-input bg-background px-3 text-lg font-medium placeholder:font-normal placeholder:text-muted-foreground focus-visible:border-ring focus-visible:outline-none aria-invalid:border-destructive"
         />
+        {titleMissing && (
+          <p
+            id="task-title-hint"
+            role="alert"
+            className="mt-1.5 text-sm text-destructive"
+          >
+            Kirjoita ensin tehtävän nimi.
+          </p>
+        )}
 
         {/* Valinnaiset tiedot kevyinä nappeina */}
         <div className="-mx-1 mt-4 flex flex-wrap gap-2">
@@ -308,8 +332,7 @@ function TaskSheetContent({
 
         <button
           type="submit"
-          disabled={!canSave}
-          className="mt-4 h-12 w-full rounded-xl bg-primary text-[15px] font-medium text-primary-foreground transition-opacity disabled:opacity-40"
+          className="mt-4 h-12 w-full rounded-xl bg-primary text-[15px] font-medium text-primary-foreground"
         >
           {task ? "Tallenna" : "Lisää tehtävä"}
         </button>
