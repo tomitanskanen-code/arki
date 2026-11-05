@@ -146,3 +146,35 @@ export interface ShoppingListItem {
   purchasedAt: string | null
   createdAt: string
 }
+
+// --- Tehtävät ---
+
+export type TaskStatus = "open" | "done"
+export type TaskPriority = "normal" | "high"
+export type TaskCategory = "home" | "kids" | "errands" | "other"
+
+export interface Task {
+  id: string
+  title: string
+  description: string | null
+  status: TaskStatus
+  priority: TaskPriority
+  category: TaskCategory | null
+  dueDate: LocalDate | null
+  /** Vastuuhenkilön kirjautumistunnus (FamilyMember.userId); null = koko perhe */
+  assignedTo: string | null
+  createdBy: string | null
+  createdAt: string
+  completedAt: string | null
+  completedBy: string | null
+}
+
+/** Uuden tehtävän tiedot; vain nimi on pakollinen. */
+export interface TaskInput {
+  title: string
+  description?: string | null
+  priority?: TaskPriority
+  category?: TaskCategory | null
+  dueDate?: LocalDate | null
+  assignedTo?: string | null
+}
